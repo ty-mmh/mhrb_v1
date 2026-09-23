@@ -1,0 +1,31 @@
+Mahoroba
+Copyright (C) 2026 Mahoroba contributors
+SPDX-License-Identifier: AGPL-3.0-only
+
+Mahoroba is free software: you can redistribute it and/or modify it under
+the terms of the GNU Affero General Public License as published by the
+Free Software Foundation, version 3 only.
+
+Mahoroba is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for
+more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with Mahoroba in the LICENSE file. If not, see
+<https://www.gnu.org/licenses/>.
+
+Scope and third-party material
+
+This notice applies to the copyrightable contributions to Mahoroba's own
+source code, documentation, tests, and build/configuration files, except
+where a file or component carries a separate license notice. It does not
+replace or remove any third-party copyright or license terms.
+
+Third-party components retain their own notices and licenses, including:
+- internal/releaseasset/THIRD_PARTY_LICENSES.txt (Go and dependencies)
+- internal/httpui/THIRD_PARTY_NOTICES.md (vendored browser assets)
+- any copyright or license notices within individual files
+
+Keep this notice and the applicable license and third-party notices when
+redistributing the work, in accordance with their respective terms.

@@ -1,0 +1,154 @@
+{
+  "head": "v12",
+  "schema_head": 12,
+  "application_tables": 39,
+  "named_indexes": 58,
+  "triggers": 82,
+  "quick_check": "ok",
+  "foreign_key_violations": 0,
+  "negative_positive_tests": [
+    {
+      "name": "U1_duplicate_claim_stage",
+      "passed": true,
+      "detail": "claim stage transition identity already exists for canonical commit"
+    },
+    {
+      "name": "U4_duplicate_event_hash",
+      "passed": true,
+      "detail": "UNIQUE constraint failed: events.event_hash_algorithm, events.event_hash_domain, events.event_hash"
+    },
+    {
+      "name": "RS_resident_description",
+      "passed": true,
+      "detail": "residents.description_content_id must belong to the resident"
+    },
+    {
+      "name": "RS_revision",
+      "passed": true,
+      "detail": "resident_revisions contains a cross-resident reference"
+    },
+    {
+      "name": "RS_revision_approval",
+      "passed": true,
+      "detail": "resident_revision_approvals reason content must belong to the revision resident"
+    },
+    {
+      "name": "RS_revision_activation",
+      "passed": true,
+      "detail": "resident_revision_activations contains a cross-resident reference"
+    },
+    {
+      "name": "RS_resident_status",
+      "passed": true,
+      "detail": "resident_status_transitions reason content must belong to the resident"
+    },
+    {
+      "name": "RS_erasure",
+      "passed": true,
+      "detail": "content_erasure_events contains a cross-resident reference"
+    },
+    {
+      "name": "RS_recall",
+      "passed": true,
+      "detail": "recall_runs contains a cross-resident reference"
+    },
+    {
+      "name": "RS_generation_run",
+      "passed": true,
+      "detail": "generation_runs contains a cross-resident or wrong-class revision reference"
+    },
+    {
+      "name": "RS_generation_input_content",
+      "passed": true,
+      "detail": "generation_run_inputs content must belong to the generation resident"
+    },
+    {
+      "name": "RS_generation_outcome_content",
+      "passed": true,
+      "detail": "generation_run_outcomes content must belong to the generation resident"
+    },
+    {
+      "name": "RS_event",
+      "passed": true,
+      "detail": "events contains a cross-resident content or generation reference"
+    },
+    {
+      "name": "RS_claim",
+      "passed": true,
+      "detail": "claims contains a cross-resident or erased-content reference"
+    },
+    {
+      "name": "RS_evidence",
+      "passed": true,
+      "detail": "claim_evidence contains a cross-resident reference"
+    },
+    {
+      "name": "RS_stage",
+      "passed": true,
+      "detail": "claim_stage_transitions contains a cross-resident reference"
+    },
+    {
+      "name": "RS_stage_dependency",
+      "passed": true,
+      "detail": "claim stage dependency must not cross resident scope"
+    },
+    {
+      "name": "RS_relation",
+      "passed": true,
+      "detail": "claim_relations contains a cross-resident reference"
+    },
+    {
+      "name": "RS_integrity",
+      "passed": true,
+      "detail": "integrity_findings contains a cross-resident reference"
+    },
+    {
+      "name": "RS_status",
+      "passed": true,
+      "detail": "claim_status_transitions contains a cross-resident reference"
+    },
+    {
+      "name": "RS_validity",
+      "passed": true,
+      "detail": "claim_validity_assertions contains a cross-resident reference"
+    },
+    {
+      "name": "RS_view_scope",
+      "passed": true,
+      "detail": "claim_view_scope_assertions contains a cross-resident reference"
+    },
+    {
+      "name": "RS_usage",
+      "passed": true,
+      "detail": "claim_usages contains a cross-resident reference"
+    },
+    {
+      "name": "ALLOW_claim_principal_cross_scope",
+      "passed": true,
+      "detail": "allowed"
+    },
+    {
+      "name": "M7_duplicate_validity_entity_commit",
+      "passed": true,
+      "detail": "UNIQUE constraint failed: claim_validity_assertions.claim_id, claim_validity_assertions.canonical_commit_id"
+    },
+    {
+      "name": "M7_duplicate_view_scope_entity_commit",
+      "passed": true,
+      "detail": "UNIQUE constraint failed: claim_view_scope_assertions.claim_id, claim_view_scope_assertions.canonical_commit_id"
+    },
+    {
+      "name": "M7_integrity_envelope_required",
+      "passed": true,
+      "detail": "M7 integrity finding envelope is incomplete"
+    },
+    {
+      "name": "M7_integrity_envelope_complete",
+      "passed": true,
+      "detail": "allowed"
+    }
+  ],
+  "tests_passed": 28,
+  "tests_total": 28,
+  "failed_tests": []
+}

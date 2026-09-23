@@ -1,0 +1,55 @@
+services:
+  mahoroba:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    platform: linux/amd64
+    init: true
+    restart: unless-stopped
+    command:
+      - admin
+      - serve
+      - --config=/etc/mahoroba/config.toml
+      # The parent volume also holds the application's namespace lock.
+      - --data-dir=/var/lib/mahoroba/data
+      - --listen=0.0.0.0:${MAHOROBA_ADMIN_PORT:-8788}
+      - --container-listen
+      - --dialogue-allow-remote=${MAHOROBA_DIALOGUE_ALLOW_REMOTE:-false}
+    environment:
+      # Unset optional credentials stay absent instead of becoming empty values.
+      - MAHOROBA_PROVIDER_BASE_URL
+      - MAHOROBA_PROVIDER_MODEL
+      - MAHOROBA_PROVIDER_API_KEY
+      - MAHOROBA_PROVIDER_ALLOW_DOCKER_HOST_HTTP=${MAHOROBA_PROVIDER_ALLOW_DOCKER_HOST_HTTP:-true}
+      - MAHOROBA_TTS_API_KEY
+      - MAHOROBA_TIMEZONE
+      - MAHOROBA_LISTEN=0.0.0.0:${MAHOROBA_DIALOGUE_PORT:-8787}
+    ports:
+      - "127.0.0.1:${MAHOROBA_ADMIN_PORT:-8788}:${MAHOROBA_ADMIN_PORT:-8788}"
+      - "127.0.0.1:${MAHOROBA_DIALOGUE_PORT:-8787}:${MAHOROBA_DIALOGUE_PORT:-8787}"
+    volumes:
+      - data:/var/lib/mahoroba
+      - files:/var/lib/mahoroba-files
+    read_only: true
+    tmpfs:
+      - /tmp:rw,nosuid,nodev,noexec,size=256m,mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    stop_grace_period: 60s
+    healthcheck:
+      test:
+        - CMD
+        - /mahoroba
+        - admin
+        - healthcheck
+        - --url=http://127.0.0.1:${MAHOROBA_ADMIN_PORT:-8788}/healthz
+      interval: 30s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+
+volumes:
+  data:
+  files:

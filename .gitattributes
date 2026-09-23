@@ -1,0 +1,5 @@
+* text=auto eol=lf
+*.csv text eol=crlf
+# The deterministic inventory format terminates each component, including the
+# final component, with a blank separator line.
+internal/releaseasset/THIRD_PARTY_LICENSES.txt whitespace=-blank-at-eof

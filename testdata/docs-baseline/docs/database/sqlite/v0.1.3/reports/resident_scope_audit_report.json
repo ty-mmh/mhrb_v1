@@ -1,0 +1,18 @@
+{
+  "schema_head": 12,
+  "scope_trigger_count": 21,
+  "scope_triggers_missing": [],
+  "scope_triggers_all_fail_closed_not_exists": true,
+  "stage_unique_index": true,
+  "event_hash_unique_index": true,
+  "quick_check": "ok",
+  "foreign_key_violations": 0,
+  "inventory_families": 38,
+  "inventory_ids_unique": true,
+  "matrix_coverage_clean": true,
+  "m7_integrity_writer_guard": true,
+  "assertion_entity_commit_unique": true,
+  "semantic_tests": 28,
+  "semantic_tests_total": 28,
+  "clean": true
+}

@@ -1,0 +1,84 @@
+data_dir = ""
+timezone = "Asia/Tokyo"
+
+[server]
+listen = "127.0.0.1:8787"
+shutdown_timeout = "15s"
+
+[database]
+filename = "mahoroba.db"
+
+[generation]
+provider = "chat-completions"
+base_url = ""
+model = ""
+request_timeout = "120s"
+max_attempts = 3
+retry_backoff = ["1s", "5s"]
+max_concurrency = 1
+disconnect_policy = "continue"
+max_input_bytes = 65536
+max_output_bytes = 65536
+safety_scan_interval = "30s"
+structured_output_mode = "auto"
+supports_json_schema = false
+
+[projection]
+scan_interval = "30s"
+as_of_refresh_interval = "1m"
+rebuild_retry_interval = "30s"
+max_staleness = "5m"
+rebuild_transaction_timeout = "2s"
+
+# Per-projection overrides may set scan_interval, as_of_refresh_interval,
+# rebuild_retry_interval, and max_staleness. The transaction timeout is global.
+# [projection.overrides.resident_current_status]
+# max_staleness = "2m"
+
+[autonomy]
+version = "autonomy-policy-v0"
+scan_interval = "30s"
+
+[autonomy.self_talk]
+enabled = false
+interval = "30m"
+consecutive_limit = 10
+hourly_limit = 2
+daily_limit = 12
+quiet_hours_start = "23:00"
+quiet_hours_end = "07:00"
+
+[autonomy.initiative]
+enabled = false
+minimum_interval = "6h"
+hourly_limit = 1
+daily_limit = 2
+recent_user_suppression = "30m"
+quiet_hours_start = "23:00"
+quiet_hours_end = "07:00"
+triggers = ["future_to_current", "volatile_aging"]
+
+[autonomy.retention]
+mode = "disabled"
+duration = "720h"
+scan_interval = "24h"
+eligibility = "present_self_talk"
+
+[autonomy.tts]
+enabled = false
+provider = "openai_speech"
+request_timeout = "15s"
+max_concurrency = 1
+queue_capacity = 8
+max_audio_bytes = 8388608
+
+[autonomy.tts.openai_speech]
+base_url = ""
+model = ""
+voice = ""
+# The API key is accepted only through MAHOROBA_TTS_API_KEY.
+
+[autonomy.tts.aivis_speech]
+base_url = "http://127.0.0.1:10101"
+# Set the signed 32-bit global style ID returned by /speakers before enabling.
+# style_id = 0

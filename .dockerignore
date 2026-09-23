@@ -1,0 +1,15 @@
+**
+!.dockerignore
+!Dockerfile
+!LICENSE
+!COPYRIGHT
+!docker/
+!docker/config.toml
+!go.mod
+!go.sum
+!cmd/
+!cmd/mahoroba/
+!cmd/mahoroba/**
+!internal/
+!internal/**
+**/*_test.go

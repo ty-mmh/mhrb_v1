@@ -1,0 +1,253 @@
+{
+  "artifact": "mahoroba_sqlite_ddl_migration",
+  "version": "v0.1.3",
+  "current_schema_head": 13,
+  "parents": {
+    "concept": "v0.2.14",
+    "data_model": "v0.2.14",
+    "runtime": "v0.1.2",
+    "matrix": "v0.1.1",
+    "resident_scope_inventory": "v0.1"
+  },
+  "schema_heads": {
+    "v10": {
+      "artifact": "docs/database/sqlite/v0.1.3/schema_v10_v0.1.3.sql",
+      "head": 10,
+      "bytes": 113823,
+      "sha256": "9e5ab0322f8049816678554bd3529d4a7b33f43397b25f683a07b16de0ba2671",
+      "migration_prefix": [
+        1,
+        10
+      ],
+      "application_tables": 38,
+      "named_indexes": 48,
+      "triggers": 74
+    },
+    "v11": {
+      "artifact": "docs/database/sqlite/v0.1.3/schema_v11_v0.1.3.sql",
+      "head": 11,
+      "bytes": 138323,
+      "sha256": "d7b1fe5c0e4560dc83d4bdcac7b0b6a57ca0866df05e438937cc8986678f373e",
+      "migration_prefix": [
+        1,
+        11
+      ],
+      "application_tables": 39,
+      "named_indexes": 54,
+      "triggers": 81
+    },
+    "v12": {
+      "artifact": "docs/database/sqlite/v0.1.3/schema_v12_v0.1.3.sql",
+      "head": 12,
+      "bytes": 143046,
+      "sha256": "d1947ff92c92927255d1a06a8872f4a636faa62ec319724b7b0f90de920351bc",
+      "migration_prefix": [
+        1,
+        12
+      ],
+      "application_tables": 39,
+      "named_indexes": 58,
+      "triggers": 82
+    },
+    "v13": {
+      "artifact": "docs/database/sqlite/v0.1.3/schema_v13_v0.1.3.sql",
+      "head": 13,
+      "bytes": 143391,
+      "sha256": "19393518cd6d4ce23f20eb1def933dbc992bafe34bbd94a6fcdf4ca0e4ec0fe4",
+      "migration_prefix": [
+        1,
+        13
+      ],
+      "application_tables": 39,
+      "named_indexes": 59,
+      "triggers": 82
+    }
+  },
+  "files": [
+    {
+      "path": "docs/README.md",
+      "bytes": 2129,
+      "sha256": "e72bce011a5e9f757384ca2905afa023fbbfc2b1d7690c032da97c76f59ac397"
+    },
+    {
+      "path": "docs/assurance/mahoroba_constraint_enforcement_matrix_v0.1.1.csv",
+      "bytes": 49030,
+      "sha256": "bfb6cfa774fa769ceb8291276fe93c493446738db109c90b67074849e2ae51ec"
+    },
+    {
+      "path": "docs/assurance/mahoroba_constraint_enforcement_matrix_v0.1.1.md",
+      "bytes": 37480,
+      "sha256": "407ae9de75c819798cb5ff6eecac90ce45bcc0a4e9d61f9a2409d32328ca3264"
+    },
+    {
+      "path": "docs/assurance/mahoroba_constraint_enforcement_matrix_v0.1.1_coverage.json",
+      "bytes": 591,
+      "sha256": "ab3decdfec380b1b58114a65c009d5e6a8411b195d2fe26be10c0c9f6d89a301"
+    },
+    {
+      "path": "docs/assurance/mahoroba_resident_scope_reference_inventory_v0.1.csv",
+      "bytes": 9972,
+      "sha256": "98e150527f30887b3cb60e7b39b90bb23f81218495f6ef474624291655901565"
+    },
+    {
+      "path": "docs/assurance/mahoroba_resident_scope_reference_inventory_v0.1.md",
+      "bytes": 9859,
+      "sha256": "961d1757f7e5d743ed7e81644bd153b3c8616da074916cbc3b82c651643eb1dd"
+    },
+    {
+      "path": "docs/database/sqlite/v0.1.3/DESIGN.md",
+      "bytes": 34354,
+      "sha256": "1401ad4bc4537532c9dbd8fb65bd10a7838c52a350503c33c7c556568ff92128"
+    },
+    {
+      "path": "docs/database/sqlite/v0.1.3/README.md",
+      "bytes": 2154,
+      "sha256": "f564e01532c3eb96563389d2446d2cd01be05c2a32cee5a2733e4f9d97119fbc"
+    },
+    {
+      "path": "docs/database/sqlite/v0.1.3/schema_v10_v0.1.3.sql",
+      "bytes": 113823,
+      "sha256": "9e5ab0322f8049816678554bd3529d4a7b33f43397b25f683a07b16de0ba2671"
+    },
+    {
+      "path": "docs/database/sqlite/v0.1.3/schema_v11_v0.1.3.sql",
+      "bytes": 138323,
+      "sha256": "d7b1fe5c0e4560dc83d4bdcac7b0b6a57ca0866df05e438937cc8986678f373e"
+    },
+    {
+      "path": "docs/database/sqlite/v0.1.3/schema_v12_v0.1.3.sql",
+      "bytes": 143046,
+      "sha256": "d1947ff92c92927255d1a06a8872f4a636faa62ec319724b7b0f90de920351bc"
+    },
+    {
+      "path": "docs/database/sqlite/v0.1.3/schema_v13_v0.1.3.sql",
+      "bytes": 143391,
+      "sha256": "19393518cd6d4ce23f20eb1def933dbc992bafe34bbd94a6fcdf4ca0e4ec0fe4"
+    },
+    {
+      "path": "docs/database/sqlite/v0.1.3/migrations/00001_canonical_core.sql",
+      "bytes": 4310,
+      "sha256": "49cc48766aed55a8cbb68065b6da4863fe9439dbf9b84af116c3229f2a163af2"
+    },
+    {
+      "path": "docs/database/sqlite/v0.1.3/migrations/00002_resident_revisions_and_lifecycle.sql",
+      "bytes": 10074,
+      "sha256": "03e0569b159b10bc50d203c1ab90a648b18e1a7513a43302d2d472c290f70a77"
+    },
+    {
+      "path": "docs/database/sqlite/v0.1.3/migrations/00003_content.sql",
+      "bytes": 5993,
+      "sha256": "22e2611559df447bcf082e89caa2adb0cf9acb963fd039e2a1f371c3f899a57b"
+    },
+    {
+      "path": "docs/database/sqlite/v0.1.3/migrations/00004_versions_generation_recall.sql",
+      "bytes": 14031,
+      "sha256": "41331dae69937eddb4c6a8941f44b17c718144415729d9861a3d85bacc54f90b"
+    },
+    {
+      "path": "docs/database/sqlite/v0.1.3/migrations/00005_events.sql",
+      "bytes": 4451,
+      "sha256": "cff06f32c5fa69953ca1a0e5b3570d85bb78cdd7e89eaa4333b0ac71f4bcc6b9"
+    },
+    {
+      "path": "docs/database/sqlite/v0.1.3/migrations/00006_memory.sql",
+      "bytes": 33544,
+      "sha256": "fd65615bcb8dcd43eb4749f446d87ccd7513de69f0dc295f8a8373fdd367a28c"
+    },
+    {
+      "path": "docs/database/sqlite/v0.1.3/migrations/00007_projections.sql",
+      "bytes": 7065,
+      "sha256": "d80d8bb4ac6dd8e884889243b9e2f08d5e5b074bf0571c8668ed0b00a7565a1e"
+    },
+    {
+      "path": "docs/database/sqlite/v0.1.3/migrations/00008_operational.sql",
+      "bytes": 2752,
+      "sha256": "10e61129aede704dbdfb33389575b14b8c2410ca6eafe27afa997c6c8557a829"
+    },
+    {
+      "path": "docs/database/sqlite/v0.1.3/migrations/00009_indexes.sql",
+      "bytes": 8055,
+      "sha256": "3b48569e9f41b604afd535015970f5c4e23a4469ee962dec114845f394377514"
+    },
+    {
+      "path": "docs/database/sqlite/v0.1.3/migrations/00010_immutability_triggers.sql",
+      "bytes": 32103,
+      "sha256": "32bcf99beb4d1a7d36ee7434bf08d38fc0559ebd9f3fc1bd80fd937dd3e9527b"
+    },
+    {
+      "path": "docs/database/sqlite/v0.1.3/migrations/00011_m7_slice0.sql",
+      "bytes": 25959,
+      "sha256": "ae7ee15a32de43097e366ad2160e47534abeb80a125c0e75b23faa2f7906cd3b"
+    },
+    {
+      "path": "docs/database/sqlite/v0.1.3/migrations/00012_m7_integrity_foundation.sql",
+      "bytes": 5381,
+      "sha256": "5b9fc625b57ab0f6813e5e29b308d1b2f157f96fa146a64140cf7dac8361b239"
+    },
+    {
+      "path": "docs/database/sqlite/v0.1.3/migrations/00013_covr02_progress_indexes.sql",
+      "bytes": 761,
+      "sha256": "500f906fadfe8c5a7bad43ab90896a886eede33dbdbdddf366cbf6ee929a3f9e"
+    },
+    {
+      "path": "docs/database/sqlite/v0.1.3/reports/migration_smoke_report.json",
+      "bytes": 1806,
+      "sha256": "c3e0fe96e1c3e0c286c26357670b801af0ae09fad6aa67a995367b2cbe292427"
+    },
+    {
+      "path": "docs/database/sqlite/v0.1.3/reports/resident_scope_audit_report.json",
+      "bytes": 500,
+      "sha256": "a826503ecd45bf23b0a9ee1305dad1237bce17b9e182b2955e0b3fad0c65e866"
+    },
+    {
+      "path": "docs/database/sqlite/v0.1.3/reports/validation_report.json",
+      "bytes": 1508,
+      "sha256": "75c443b6c85e61c7590dc7e1113c0e0ab4836f69b3180ae79092919bb4ab12a2"
+    },
+    {
+      "path": "docs/database/sqlite/v0.1.3/reports/validation_report.semantic_v10.json",
+      "bytes": 3845,
+      "sha256": "2ca1746657ca23c0853f1806151fbcff9f2afaad89a375224c97af62e00fa731"
+    },
+    {
+      "path": "docs/database/sqlite/v0.1.3/reports/validation_report.semantic_v11.json",
+      "bytes": 3816,
+      "sha256": "3bcf175c219375c02ef90224df3e4e0492860f15914847beb71c3901e4a8b955"
+    },
+    {
+      "path": "docs/database/sqlite/v0.1.3/reports/validation_report.semantic_v12.json",
+      "bytes": 4504,
+      "sha256": "9747eff9182960b37a5f281b5639be67711feb7435e191691aef9aa08f830cd8"
+    },
+    {
+      "path": "docs/database/sqlite/v0.1.3/reports/validation_report.semantic_v13.json",
+      "bytes": 4677,
+      "sha256": "676b6c57c1236d419aecc92332869c2f2c6cfa593d181bc9165aa48605a0e357"
+    },
+    {
+      "path": "docs/database/sqlite/v0.1.3/validation/README.md",
+      "bytes": 844,
+      "sha256": "7dfa361abb422b29878cf5ce550f0a4c65a7006333dc3f1bd66dd78e7a35c892"
+    },
+    {
+      "path": "docs/database/sqlite/v0.1.3/validation/generate_manifest.py",
+      "bytes": 7637,
+      "sha256": "061256aee12fe7f1d43daecb88f09d2d72a1ec92411affa553eba31e57f93ea9"
+    },
+    {
+      "path": "docs/database/sqlite/v0.1.3/validation/generate_schemas.py",
+      "bytes": 4391,
+      "sha256": "2ac799f813657f4b87995b84e17032c705c1d49eb0e59abdad26608d00e276a6"
+    },
+    {
+      "path": "docs/database/sqlite/v0.1.3/validation/validate_migrations.py",
+      "bytes": 6444,
+      "sha256": "56b3025b6689c37119de4f7325685b75711e1b3ff57d87caaf13b6e9d7655a96"
+    },
+    {
+      "path": "docs/database/sqlite/v0.1.3/validation/validate_semantics.py",
+      "bytes": 18899,
+      "sha256": "f1bf95f73255b420c866036f3887b723918f72a702a87bac50c5140edde66722"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+# Local build output
+/mahoroba
+/mahoroba.exe
+*.test
+*.out
+/coverage/
+
+# User settings and runtime data
+/.env
+/config.toml
+/.mahoroba/
+/.mahoroba.lock
+/data/
+/backups/
+/logs/
+*.db
+*.db-shm
+*.db-wal
+
+# Temporary and editor files
+/.tmp/
+/tmp/
+.gocache*/
+.gomodcache/
+.test-runtime/
+__pycache__/
+*.py[cod]
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

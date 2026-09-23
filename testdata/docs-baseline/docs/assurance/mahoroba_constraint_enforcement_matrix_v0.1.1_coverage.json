@@ -1,0 +1,25 @@
+{
+  "version": "v0.1.1",
+  "rows": 144,
+  "static_invariants": 106,
+  "runtime_invariants": 31,
+  "missing_static": [],
+  "missing_runtime": [],
+  "duplicate_ids": [],
+  "blank_primary": [],
+  "blank_test_id": [],
+  "blank_status": [],
+  "status_counts": {
+    "DDL-IMPLEMENTED": 23,
+    "DEFERRED": 2,
+    "PLANNED-RUNTIME": 2,
+    "RUNTIME-SPEC": 88,
+    "SPECIFIED": 17,
+    "THIS-DOCUMENT": 1,
+    "VERIFIED": 6,
+    "VERIFIED-DDL-0.1.2": 5
+  },
+  "resident_scope_inventory": "mahoroba_resident_scope_reference_inventory_v0.1.md",
+  "ddl_baseline": "SQLite DDL v0.1.2",
+  "clean": true
+}

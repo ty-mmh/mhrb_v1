@@ -1,0 +1,57 @@
+{
+  "current_schema": "v13",
+  "current_schema_head": 13,
+  "reversible_head": 10,
+  "schema_heads": {
+    "v10": {
+      "head": 10,
+      "application_tables": 38,
+      "named_indexes": 48,
+      "triggers": 74,
+      "all_application_tables_strict": true,
+      "strict_tables": 38,
+      "without_rowid_tables": 5,
+      "quick_check": "ok",
+      "foreign_key_violations": 0
+    },
+    "v11": {
+      "head": 11,
+      "application_tables": 39,
+      "named_indexes": 54,
+      "triggers": 81,
+      "all_application_tables_strict": true,
+      "strict_tables": 39,
+      "without_rowid_tables": 5,
+      "quick_check": "ok",
+      "foreign_key_violations": 0
+    },
+    "v12": {
+      "head": 12,
+      "application_tables": 39,
+      "named_indexes": 58,
+      "triggers": 82,
+      "all_application_tables_strict": true,
+      "strict_tables": 39,
+      "without_rowid_tables": 5,
+      "quick_check": "ok",
+      "foreign_key_violations": 0
+    },
+    "v13": {
+      "head": 13,
+      "application_tables": 39,
+      "named_indexes": 59,
+      "triggers": 82,
+      "all_application_tables_strict": true,
+      "strict_tables": 39,
+      "without_rowid_tables": 5,
+      "quick_check": "ok",
+      "foreign_key_violations": 0
+    }
+  },
+  "semantic_reports": {
+    "v10": "reports/validation_report.semantic_v10.json",
+    "v11": "reports/validation_report.semantic_v11.json",
+    "v12": "reports/validation_report.semantic_v12.json",
+    "v13": "reports/validation_report.semantic_v13.json"
+  }
+}

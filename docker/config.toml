@@ -1,0 +1,16 @@
+# Public application configuration, copied into the image as root-owned 0444.
+# Rebuild the image after editing. Never put API keys in this file.
+data_dir = "/var/lib/mahoroba/data"
+timezone = "Asia/Tokyo"
+
+[server]
+listen = "0.0.0.0:8787"
+shutdown_timeout = "15s"
+
+[generation]
+provider = "chat-completions"
+base_url = ""
+model = ""
+
+# Add optional autonomy/TTS settings from config.example.toml here.
+# Provider credentials are supplied through environment variables at runtime.

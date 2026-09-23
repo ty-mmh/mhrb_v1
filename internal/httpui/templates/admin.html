@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Manage · Mahoroba</title>
+  <link rel="stylesheet" href="/static/app.css">
+  <link rel="stylesheet" href="/static/admin.css">
+  <script src="/static/admin.js" defer></script>
+</head>
+<body>
+  <header class="masthead">
+    <div>
+      <p class="eyebrow">Mahoroba local management</p>
+      <h1>Manage</h1>
+    </div>
+    <a id="dialogue-link" class="navigation-link" data-dialogue-url="{{.DialogueURL}}" aria-disabled="true" tabindex="-1">Open dialogue ↗</a>
+  </header>
+  <main class="management">
+    <section class="management-intro" aria-label="Getting started">
+      <p>Create and manage residents, inspect state, and run maintenance operations.</p>
+      {{if .ManagementDataDir}}<p class="field-help">Data directory: <code class="data-directory">{{.ManagementDataDir}}</code></p>{{end}}
+      <details>
+        <summary>Creating your first resident</summary>
+        <ol>
+          <li>Review the owner, name, and principles in <strong>Bootstrap init</strong>, run it, and keep the resident ID shown in its result.</li>
+          <li>Run <strong>Bootstrap approve</strong> for that resident as a separate decision to approve those principles.</li>
+          <li>Run <strong>Bootstrap finalize</strong> to activate the resident.</li>
+          <li>Use <strong>Start dialogue server</strong> below, wait for it to be running, then open dialogue.</li>
+        </ol>
+      </details>
+      <p class="field-help">This management server uses the configuration and data directory chosen when it was started. Operations marked “Stop dialogue first” need exclusive access. Stop the dialogue server and wait for shutdown to complete before running them.</p>
+    </section>
+
+    <section id="runtime-panel" class="runtime-panel" aria-labelledby="runtime-title">
+      <div class="operation-heading">
+        <h2 id="runtime-title">Dialogue server</h2>
+        <button id="runtime-refresh" class="secondary-button" type="button">Refresh status</button>
+      </div>
+      <p id="runtime-state" role="status" aria-live="polite">Checking server status…</p>
+      <p id="runtime-message" class="field-help">These controls start and stop the dialogue server managed by this page's management process. A server started separately must be stopped in its own terminal.</p>
+      <p id="runtime-error" class="notice hidden" role="alert"></p>
+      <label id="runtime-review" class="operation-review" for="runtime-confirmed">
+        <input id="runtime-confirmed" type="checkbox" disabled>
+        <span id="runtime-confirmation">Confirm the server action before continuing.</span>
+      </label>
+      <div class="runtime-actions">
+        <button id="runtime-start" type="button" disabled>Start dialogue server</button>
+        <button id="runtime-stop" class="secondary-button" type="button" disabled>Stop dialogue server</button>
+      </div>
+      <p class="field-help">Starting uses the current configuration, including enabled background activity. Stopping drains active work and keeps this management page available. Closing this browser tab does not stop the dialogue server.</p>
+      <p class="field-help"><a href="{{.DialogueURL}}">Open the configured dialogue address ↗</a> for a server started separately. Its availability is not checked by these controls.</p>
+    </section>
+
+    <div id="admin-notice" class="notice hidden" role="status" aria-live="polite"></div>
+    <noscript><p class="notice">Enable JavaScript to load operations and submit management forms.</p></noscript>
+
+    <section aria-label="Choose an operation">
+      <label class="field-label" for="admin-command">Operation</label>
+      <select id="admin-command" disabled><option>Loading operations…</option></select>
+    </section>
+
+    <form id="admin-form" class="admin-form hidden">
+      <div class="operation-heading">
+        <h2 id="operation-title"></h2>
+        <span id="operation-access" class="operation-access"></span>
+      </div>
+      <p class="field-help">CLI: <code id="operation-command"></code></p>
+      <p id="operation-description"></p>
+      <p id="operation-offline" class="notice hidden">Stop dialogue first. This operation needs exclusive access to the data directory. If another runtime is running, the operation will report that it is busy.</p>
+      <fieldset id="operation-inputs"><legend class="sr-only">Operation inputs</legend><div id="operation-fields" class="operation-fields"></div></fieldset>
+      <label id="operation-review" class="operation-review hidden" for="operation-confirmed">
+        <input id="operation-confirmed" type="checkbox">
+        <span id="operation-confirmation"></span>
+      </label>
+      <div class="form-actions">
+        <span id="operation-state" class="field-help" aria-live="polite">No operation has been run.</span>
+        <button id="operation-submit" type="submit">Run operation</button>
+      </div>
+    </form>
+
+    <section id="admin-result" class="admin-result hidden" aria-labelledby="result-title" tabindex="-1">
+      <div class="operation-heading">
+        <h2 id="result-title">Result</h2>
+        <button id="result-download" class="secondary-button" type="button">Save result</button>
+      </div>
+      <p id="result-status" role="status"></p>
+      <div id="result-output-section"><h3>Output</h3><pre id="result-output"></pre></div>
+      <div id="result-diagnostics-section" class="hidden"><h3>Diagnostics</h3><pre id="result-diagnostics"></pre></div>
+    </section>
+  </main>
+</body>
+</html>

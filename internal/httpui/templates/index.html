@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>{{.Title}}</title>
+  <link rel="stylesheet" href="/static/app.css">
+  <script src="/static/htmx-2.0.10.min.js" defer></script>
+  <script src="/static/app.js" defer></script>
+</head>
+<body data-ready="{{.Ready}}" data-resident-id="{{.ResidentID}}" data-audio-available="{{.AudioAvailable}}">
+  <header class="masthead">
+    <div>
+      <p class="eyebrow">Mahoroba local dialogue</p>
+      <h1>{{if .ResidentName}}{{.ResidentName}}{{else}}Mahoroba{{end}}</h1>
+    </div>
+    {{if .ResidentID}}
+    <div class="resident-state" aria-label="Resident state">
+      <span class="status-dot" aria-hidden="true"></span>
+      <span>{{.ResidentStatus}}</span>
+      <code title="Resident ID">{{.ResidentID}}</code>
+    </div>
+    {{end}}
+  </header>
+
+  <main>
+    <p><a href="{{.ManagementURL}}">Manage residents and maintenance ↗</a> <small>(start <code>mahoroba admin serve</code>)</small></p>
+    <section id="notice" class="notice{{if not .StatusMessage}} hidden{{end}}" role="status" aria-live="polite">
+      {{.StatusMessage}}
+    </section>
+
+    <div id="conversation" class="conversation">
+      <section id="dialogue" class="dialogue" aria-label="Dialogue history" aria-live="polite">
+        {{if .Messages}}
+          {{range .Messages}}
+          <article class="message message-{{.Role}}" data-event-id="{{.EventID}}">
+            <header><span>{{.Label}}</span><time datetime="{{.Time}}">{{.Time}}</time></header>
+            <p>{{.Text}}</p>
+          </article>
+          {{end}}
+        {{else if .Ready}}
+          <p class="empty-state">The conversation is quiet. Begin when you are ready.</p>
+        {{end}}
+      </section>
+
+      <section id="provisional" class="provisional hidden" aria-live="polite" aria-label="Resident is responding">
+        <span class="pulse" aria-hidden="true"></span>
+        <p></p>
+      </section>
+
+    </div>
+
+    <form id="message-form" action="/messages" method="post">
+      <label for="message">Message</label>
+      <textarea id="message" name="message" rows="4" maxlength="65536" aria-describedby="message-shortcut" required {{if not .Ready}}disabled{{end}}></textarea>
+      <div class="form-actions">
+        <div class="connection-controls">
+          <span id="connection-state" aria-live="polite">Connecting...</span>
+          {{if .AudioAvailable}}
+          <label class="voice-toggle" for="voice-output">
+            <input id="voice-output" type="checkbox">
+            <span>Voice output</span>
+          </label>
+          {{end}}
+        </div>
+        <button type="submit" title="Send (Shift+Enter)" {{if not .Ready}}disabled{{end}}>Send</button>
+      </div>
+      <p id="message-shortcut" class="keyboard-hint">Shift+Enter to send · Enter for a new line</p>
+    </form>
+  </main>
+</body>
+</html>
