@@ -300,7 +300,7 @@ func adminCLICommands() []adminCLICommand {
 	scope := choice("scope", "Visibility", true, "resident_ui", "admin_only")
 	statuses := []string{"active", "invalidated", "superseded", "quarantined"}
 	reason := choice("reason", "Decision reason", true, "human_invalidation", "human_supersession", "human_quarantine", "human_reactivation")
-	memoryVersions := []string{"memory-policy-v1", "memory-policy-v2", "memory-policy-v3", "memory-policy-v4"}
+	memoryVersions := []string{"memory-policy-v1", "memory-policy-v2", "memory-policy-v3", "memory-policy-v4", "memory-policy-v5"}
 	mutation := "I have reviewed the inputs and confirm this operation."
 	offline := "Stop the dialogue server and wait for Stopped before running this operation. Separately started runtimes retain their existing exclusive lock."
 
@@ -339,6 +339,10 @@ func adminCLICommands() []adminCLICommand {
 	add("admin.memory.policy.activate-v0", "Memory", "Activate memory policy v0", "Run the existing activate-v0 memory policy operation.", true, true, resident)
 	add("admin.memory.policy.activate-autonomy-v0", "Memory", "Activate autonomy memory policy", "Activate the autonomy memory policy. Feature settings still come from TOML.", true, true, resident)
 	add("admin.memory.policy.activate-v4", "Memory", "Activate memory policy v4", "Migrate from the specified current policy to v4, preserving the CLI acknowledgement requirements.", true, true,
+		resident, choice("from", "Current memory policy", true, memoryVersions...),
+		check("ack-enable-recall", "Acknowledge enabling Recall", false),
+		check("ack-self-talk-extraction", "Acknowledge mandatory self-talk extraction", false))
+	add("admin.memory.policy.activate-v5", "Memory", "Activate memory policy v5", "Enable query-relevant Recall and evidence-weighted confidence. Historical policy records remain unchanged.", true, true,
 		resident, choice("from", "Current memory policy", true, memoryVersions...),
 		check("ack-enable-recall", "Acknowledge enabling Recall", false),
 		check("ack-self-talk-extraction", "Acknowledge mandatory self-talk extraction", false))

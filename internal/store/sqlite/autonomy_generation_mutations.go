@@ -324,8 +324,9 @@ func (u *canonicalUoW) validateAutonomousDecision(
 	if purpose == domain.GenerationPurposeOutboundInitiative &&
 		snapshot.MemoryPolicyVersion != string(memory.PolicyVersionV2) &&
 		snapshot.MemoryPolicyVersion != string(memory.PolicyVersionV3) &&
-		snapshot.MemoryPolicyVersion != string(memory.PolicyVersionV4) {
-		return errors.New("sqlite: outbound initiative requires active memory-policy-v2, memory-policy-v3, or memory-policy-v4")
+		snapshot.MemoryPolicyVersion != string(memory.PolicyVersionV4) &&
+		snapshot.MemoryPolicyVersion != string(memory.PolicyVersionV5) {
+		return errors.New("sqlite: outbound initiative requires active memory-policy-v2, memory-policy-v3, memory-policy-v4, or memory-policy-v5")
 	}
 	requiredClaims, projectionAvailable, err := u.validateAutonomousTrigger(
 		ctx, residentID, purpose, trigger, snapshot, maxStaleness, evidence, requireCurrentProjection,

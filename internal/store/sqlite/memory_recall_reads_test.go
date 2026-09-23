@@ -145,7 +145,7 @@ func TestLoadRecallCandidatesMarksOnlyAbstractsRelationSourceAsAbstract(t *testi
 		t.Fatal(err)
 	}
 	candidates, err := uow.loadRecallCandidates(
-		context.Background(), fixture.residentID, head, memory.DefaultPolicyV2(),
+		context.Background(), fixture.residentID, head, memory.DefaultPolicyV2(), "",
 	)
 	if err != nil {
 		t.Fatalf("loadRecallCandidates: %v", err)
@@ -254,7 +254,7 @@ func TestLoadRecallCandidatesUsesPinnedCurrentnessAndLatestSupportRecordedAt(t *
 	}
 
 	candidates, err := uow.loadRecallCandidates(
-		context.Background(), fixture.residentID, head, memory.DefaultPolicyV2(),
+		context.Background(), fixture.residentID, head, memory.DefaultPolicyV2(), "",
 	)
 	if err != nil {
 		t.Fatalf("loadRecallCandidates: %v", err)

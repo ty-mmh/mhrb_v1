@@ -47,7 +47,7 @@ func (r *CanonicalRepository) AssembleDialogue(
 	if err != nil {
 		return domain.DialogueAssemblyResult{}, err
 	}
-	recallSnapshot, err := u.loadDialogueRecallSnapshotAt(ctx, request.ResidentID, snapshot, request.Target)
+	recallSnapshot, err := u.loadDialogueRecallSnapshotAt(ctx, request.ResidentID, snapshot, request.Target, string(currentBytes))
 	if err != nil {
 		return domain.DialogueAssemblyResult{}, err
 	}

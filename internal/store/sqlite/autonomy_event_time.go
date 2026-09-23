@@ -112,7 +112,7 @@ func autonomyMemoryPolicySupportsSelfTalkAtCommit(
 	if err != nil {
 		return false, fmt.Errorf("sqlite: parse event-time memory policy: %w", err)
 	}
-	return policy.Version == memory.PolicyVersionV3 || policy.Version == memory.PolicyVersionV4, nil
+	return policy.Version == memory.PolicyVersionV3 || policy.Version == memory.PolicyVersionV4 || policy.Version == memory.PolicyVersionV5, nil
 }
 
 // AutonomousSelfTalkEventTimeEligible reports whether the memory policy that
@@ -155,7 +155,7 @@ func (r *CanonicalRepository) AutonomousSelfTalkEventTimeEligible(
 	if err != nil {
 		return false, fmt.Errorf("sqlite: parse event-time memory policy %s: %w", revision.RevisionID, err)
 	}
-	return policy.Version == memory.PolicyVersionV3 || policy.Version == memory.PolicyVersionV4, nil
+	return policy.Version == memory.PolicyVersionV3 || policy.Version == memory.PolicyVersionV4 || policy.Version == memory.PolicyVersionV5, nil
 }
 
 func (u *canonicalUoW) requireAutonomousSelfTalkEventTimePolicy(
@@ -172,7 +172,7 @@ func (u *canonicalUoW) requireAutonomousSelfTalkEventTimePolicy(
 		return err
 	}
 	if !eligible {
-		return errors.New("sqlite: self-talk requires event-time memory-policy-v3 or memory-policy-v4")
+		return errors.New("sqlite: self-talk requires event-time memory-policy-v3, memory-policy-v4, or memory-policy-v5")
 	}
 	return nil
 }

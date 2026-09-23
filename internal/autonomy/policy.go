@@ -10,6 +10,7 @@ import (
 const (
 	MemoryPolicyVersionV3 = "memory-policy-v3"
 	MemoryPolicyVersionV4 = "memory-policy-v4"
+	MemoryPolicyVersionV5 = "memory-policy-v5"
 )
 
 type LocalTime struct {

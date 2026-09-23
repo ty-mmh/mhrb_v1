@@ -1239,6 +1239,9 @@ func runAdmin(ctx context.Context, arguments []string, stdout, stderr io.Writer)
 	if len(arguments) >= 3 && arguments[0] == "memory" && arguments[1] == "policy" && arguments[2] == "activate-v4" {
 		return runMemoryPolicyActivateV4(ctx, arguments[3:], stdout, stderr)
 	}
+	if len(arguments) >= 3 && arguments[0] == "memory" && arguments[1] == "policy" && arguments[2] == "activate-v5" {
+		return runMemoryPolicyActivateV5(ctx, arguments[3:], stdout, stderr)
+	}
 	if len(arguments) >= 3 && arguments[0] == "memory" && arguments[1] == "claim" {
 		switch arguments[2] {
 		case "list", "show":
@@ -2282,7 +2285,8 @@ func runAutonomyStatus(ctx context.Context, arguments []string, stdout, stderr i
 	}
 	initiativeMemoryEnabled := snapshot.MemoryPolicyVersion == string(memory.PolicyVersionV2) ||
 		snapshot.MemoryPolicyVersion == string(memory.PolicyVersionV3) ||
-		snapshot.MemoryPolicyVersion == string(memory.PolicyVersionV4)
+		snapshot.MemoryPolicyVersion == string(memory.PolicyVersionV4) ||
+		snapshot.MemoryPolicyVersion == string(memory.PolicyVersionV5)
 
 	return writeIndentedJSON(stdout, map[string]any{
 		"captured_head":          canonicalHeadJSON(snapshot.CapturedHead),
@@ -2299,7 +2303,8 @@ func runAutonomyStatus(ctx context.Context, arguments []string, stdout, stderr i
 			"self_talk": autonomyFeatureJSON(policy.SelfTalk.Enabled,
 				policy.SelfTalk.Enabled && snapshot.ResidentStatus == "active" &&
 					(snapshot.MemoryPolicyVersion == autonomy.MemoryPolicyVersionV3 ||
-						snapshot.MemoryPolicyVersion == autonomy.MemoryPolicyVersionV4),
+						snapshot.MemoryPolicyVersion == autonomy.MemoryPolicyVersionV4 ||
+						snapshot.MemoryPolicyVersion == autonomy.MemoryPolicyVersionV5),
 				selfTalkDecision, selfTalkTrigger),
 			"initiative": autonomyFeatureJSON(policy.Initiative.Enabled,
 				policy.Initiative.Enabled && snapshot.ResidentStatus == "active" &&
@@ -2742,7 +2747,19 @@ func runAutonomyMemoryPolicyActivate(ctx context.Context, arguments []string, st
 }
 
 func runMemoryPolicyActivateV4(ctx context.Context, arguments []string, stdout, stderr io.Writer) error {
-	flags := flag.NewFlagSet("admin memory policy activate-v4", flag.ContinueOnError)
+	return runMemoryPolicyActivateCurrent(ctx, arguments, stdout, stderr, false)
+}
+
+func runMemoryPolicyActivateV5(ctx context.Context, arguments []string, stdout, stderr io.Writer) error {
+	return runMemoryPolicyActivateCurrent(ctx, arguments, stdout, stderr, true)
+}
+
+func runMemoryPolicyActivateCurrent(ctx context.Context, arguments []string, stdout, stderr io.Writer, v5 bool) error {
+	operation := "admin memory policy activate-v4"
+	if v5 {
+		operation = "admin memory policy activate-v5"
+	}
+	flags := flag.NewFlagSet(operation, flag.ContinueOnError)
 	flags.SetOutput(stderr)
 	common := addCommon(flags, false)
 	residentRaw := flags.String("resident", "", "active resident ULID")
@@ -2753,7 +2770,7 @@ func runMemoryPolicyActivateV4(ctx context.Context, arguments []string, stdout, 
 		return err
 	}
 	if flags.NArg() != 0 {
-		return errors.New("admin memory policy activate-v4 accepts flags only")
+		return fmt.Errorf("%s accepts flags only", operation)
 	}
 	residentID, err := requiredID(*residentRaw, "resident")
 	if err != nil {
@@ -2767,10 +2784,15 @@ func runMemoryPolicyActivateV4(ctx context.Context, arguments []string, stdout, 
 		return fmt.Errorf("invalid --from: %w", err)
 	}
 	return withAdminRuntime(ctx, common, func(runtime *runtimeComponents, _ config.Config) error {
-		result, err := runtime.app.ActivateMemoryPolicyV4(ctx, app.ActivateMemoryPolicyV4Options{
+		options := app.ActivateMemoryPolicyV4Options{
 			ResidentID: residentID, ExpectedFrom: from,
 			AcknowledgeRecallEnable: *ackRecall, AcknowledgeSelfTalkExtraction: *ackSelfTalk,
-		})
+		}
+		activate := runtime.app.ActivateMemoryPolicyV4
+		if v5 {
+			activate = runtime.app.ActivateMemoryPolicyV5
+		}
+		result, err := activate(ctx, options)
 		if err != nil {
 			return err
 		}
@@ -3021,6 +3043,7 @@ func printUsage(writer io.Writer) {
   mahoroba admin memory policy activate-v0 --resident ULID
   mahoroba admin memory policy activate-autonomy-v0 --resident ULID
   mahoroba admin memory policy activate-v4 --resident ULID --from VERSION [--ack-enable-recall] [--ack-self-talk-extraction]
+  mahoroba admin memory policy activate-v5 --resident ULID --from VERSION [--ack-enable-recall] [--ack-self-talk-extraction]
   mahoroba admin memory claim list --resident ULID [--stage STAGE] [--status STATUS] [--scope SCOPE]
   mahoroba admin memory claim show --resident ULID --claim ULID
   mahoroba admin memory claim scope --resident ULID --claim ULID --scope resident_ui|admin_only

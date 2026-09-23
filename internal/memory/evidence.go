@@ -205,6 +205,15 @@ func AggregateEvidence(policy Policy, points []EvaluatedEvidence) (EvidenceAggre
 	if err != nil {
 		return EvidenceAggregate{}, fmt.Errorf("%w: total weight: %v", ErrInvalidEvidence, err)
 	}
+	if policy.Version == PolicyVersionV5 {
+		// One stated event's weight remains uncommitted. Unlike a bare support
+		// fraction, a single weak inference is not displayed as certainty 1.
+		// Recorded point weights and every older policy retain their meaning.
+		total, err = checkedAdd(total, fixedPointScale)
+		if err != nil {
+			return EvidenceAggregate{}, fmt.Errorf("%w: confidence prior: %v", ErrInvalidEvidence, err)
+		}
+	}
 	confidence, err := ratioOf(support, total)
 	if err != nil {
 		return EvidenceAggregate{}, fmt.Errorf("%w: confidence: %v", ErrInvalidEvidence, err)

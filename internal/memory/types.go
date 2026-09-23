@@ -33,11 +33,12 @@ const (
 	PolicyVersionV2 PolicyVersion = "memory-policy-v2"
 	PolicyVersionV3 PolicyVersion = "memory-policy-v3"
 	PolicyVersionV4 PolicyVersion = "memory-policy-v4"
+	PolicyVersionV5 PolicyVersion = "memory-policy-v5"
 )
 
 func (value PolicyVersion) Validate() error {
 	switch value {
-	case PolicyVersionV1, PolicyVersionV2, PolicyVersionV3, PolicyVersionV4:
+	case PolicyVersionV1, PolicyVersionV2, PolicyVersionV3, PolicyVersionV4, PolicyVersionV5:
 		return nil
 	default:
 		return enumError("policy version", string(value))

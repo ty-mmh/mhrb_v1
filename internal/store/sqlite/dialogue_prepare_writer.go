@@ -804,7 +804,7 @@ func (u *canonicalUoW) validatePreparedDialogueAssembly(
 	if err != nil {
 		return err
 	}
-	recallSnapshot, err := u.loadPreparedDialogueRecallSnapshot(ctx, generation.ResidentID, snapshot, value.Target)
+	recallSnapshot, err := u.loadPreparedDialogueRecallSnapshot(ctx, generation.ResidentID, snapshot, value.Target, string(currentBytes))
 	if err != nil {
 		return err
 	}
@@ -935,6 +935,7 @@ func (u *canonicalUoW) loadPreparedDialogueRecallSnapshot(
 	residentID canonical.ID,
 	dialogue dialogueSnapshot,
 	target domain.AssemblyTarget,
+	queryText string,
 ) (dialogueRecallSnapshot, error) {
 	policy, _, err := memory.ParsePolicy(dialogue.memoryPolicy)
 	if err != nil {
@@ -965,7 +966,7 @@ func (u *canonicalUoW) loadPreparedDialogueRecallSnapshot(
 	if err != nil || result.fallback != "" {
 		return result, err
 	}
-	result.candidates, err = u.loadRecallCandidates(ctx, residentID, target.Head.CommitSeq, policy)
+	result.candidates, err = u.loadRecallCandidates(ctx, residentID, target.Head.CommitSeq, policy, queryText)
 	if errors.Is(err, errRecallProjectionProvenance) {
 		result.fallback = domain.MemoryRecallProjectionProvenanceUnknown
 		result.candidates = nil
@@ -1447,7 +1448,13 @@ func (u *canonicalUoW) validateSuccessfulDialogueRecall(
 		return errors.New("sqlite: dialogue Recall decision parameters differ from policy and Assembly target")
 	}
 
-	canonicalCandidates, err := u.loadRecallCandidates(ctx, value.Generation.ResidentID, value.Target.Head.CommitSeq, policy)
+	_, queryBytes, err := loadDialogueAssemblySource(ctx, u.tx, domain.DialogueAssemblyRequest{
+		ResidentID: value.Generation.ResidentID, SourceEventID: value.SourceEventID, Target: value.Target,
+	})
+	if err != nil {
+		return err
+	}
+	canonicalCandidates, err := u.loadRecallCandidates(ctx, value.Generation.ResidentID, value.Target.Head.CommitSeq, policy, string(queryBytes))
 	if err != nil {
 		return fmt.Errorf("sqlite: rebuild prepared dialogue Recall candidates: %w", err)
 	}

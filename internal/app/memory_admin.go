@@ -16,6 +16,8 @@ type ActivateMemoryPolicyV4Options struct {
 	AcknowledgeSelfTalkExtraction bool
 }
 
+type ActivateMemoryPolicyV5Options = ActivateMemoryPolicyV4Options
+
 // memoryPolicyProjectionRebuilder is deliberately narrower than the normal
 // asynchronous commit notifier. A V4 transition changes the policy dependency
 // and must not reopen an active resident until every required Projection has
@@ -84,13 +86,30 @@ func (a *Application) ActivateAutonomyMemoryPolicyV0(
 	})
 }
 
-// ActivateMemoryPolicyV4 is the only public transition path into the current
-// memory policy. ExpectedFrom and the material capability acknowledgements are
+// ActivateMemoryPolicyV4 preserves the explicit transition into V4.
+// ExpectedFrom and the material capability acknowledgements are
 // checked before pipeline registration and again inside the Canonical writer
 // transaction so a stale caller cannot downgrade or bypass the transition.
 func (a *Application) ActivateMemoryPolicyV4(
 	ctx context.Context,
 	options ActivateMemoryPolicyV4Options,
+) (domain.MemoryPolicyActivationResult, error) {
+	return a.activateSupportedMemoryPolicy(ctx, options, memory.DefaultPolicyV4())
+}
+
+// ActivateMemoryPolicyV5 is an explicit, owner-admin transition. It does not
+// rewrite historical evidence, Recall snapshots, or recorded policy revisions.
+func (a *Application) ActivateMemoryPolicyV5(
+	ctx context.Context,
+	options ActivateMemoryPolicyV5Options,
+) (domain.MemoryPolicyActivationResult, error) {
+	return a.activateSupportedMemoryPolicy(ctx, options, memory.DefaultPolicyV5())
+}
+
+func (a *Application) activateSupportedMemoryPolicy(
+	ctx context.Context,
+	options ActivateMemoryPolicyV4Options,
+	target memory.Policy,
 ) (domain.MemoryPolicyActivationResult, error) {
 	if err := a.ensureAccepting(); err != nil {
 		return domain.MemoryPolicyActivationResult{}, err
@@ -106,15 +125,15 @@ func (a *Application) ActivateMemoryPolicyV4(
 	if err != nil {
 		return domain.MemoryPolicyActivationResult{}, err
 	}
-	if err := validateMemoryPolicyV4Preflight(current.Version, options); err != nil {
+	if err := validateMemoryPolicyPreflight(current.Version, target.Version, options); err != nil {
 		return domain.MemoryPolicyActivationResult{}, err
 	}
-	if current.Version != memory.PolicyVersionV4 {
+	if current.Version != target.Version {
 		if err := a.registerMemoryPolicyV4Pipelines(ctx); err != nil {
 			return domain.MemoryPolicyActivationResult{}, err
 		}
 	}
-	activation, err := a.activateMemoryPolicy(ctx, resident, memory.DefaultPolicyV4(), memoryPolicyActivationTransition{
+	activation, err := a.activateMemoryPolicy(ctx, resident, target, memoryPolicyActivationTransition{
 		expectedFrom:                  options.ExpectedFrom,
 		acknowledgeRecallEnable:       options.AcknowledgeRecallEnable,
 		acknowledgeSelfTalkExtraction: options.AcknowledgeSelfTalkExtraction,
@@ -137,7 +156,7 @@ func (a *Application) rebuildMemoryPolicyProjections(ctx context.Context, reside
 		return nil
 	}
 	if err := rebuilder.RebuildAll(ctx, residentID); err != nil {
-		return fmt.Errorf("app: rebuild Projections after memory-policy-v4 activation: %w", err)
+		return fmt.Errorf("app: rebuild Projections after memory policy activation: %w", err)
 	}
 	return nil
 }
@@ -180,8 +199,15 @@ func validateMemoryPolicyV4Preflight(
 	current memory.PolicyVersion,
 	options ActivateMemoryPolicyV4Options,
 ) error {
+	return validateMemoryPolicyPreflight(current, memory.PolicyVersionV4, options)
+}
+
+func validateMemoryPolicyPreflight(
+	current, target memory.PolicyVersion,
+	options ActivateMemoryPolicyV4Options,
+) error {
 	if err := options.ExpectedFrom.Validate(); err != nil {
-		return fmt.Errorf("app: --from is required for memory-policy-v4 activation: %w", err)
+		return fmt.Errorf("app: --from is required for %s activation: %w", target, err)
 	}
 	if options.ExpectedFrom != current {
 		return fmt.Errorf("app: memory policy expected-from mismatch: expected %s, current %s",
@@ -190,13 +216,18 @@ func validateMemoryPolicyV4Preflight(
 	switch current {
 	case memory.PolicyVersionV1:
 		if !options.AcknowledgeRecallEnable || !options.AcknowledgeSelfTalkExtraction {
-			return fmt.Errorf("app: memory-policy-v1 to v4 requires recall-enable and self-talk-extraction acknowledgements")
+			return fmt.Errorf("app: memory-policy-v1 to %s requires recall-enable and self-talk-extraction acknowledgements", target)
 		}
 	case memory.PolicyVersionV2:
 		if !options.AcknowledgeSelfTalkExtraction {
-			return fmt.Errorf("app: memory-policy-v2 to v4 requires self-talk-extraction acknowledgement")
+			return fmt.Errorf("app: memory-policy-v2 to %s requires self-talk-extraction acknowledgement", target)
 		}
 	case memory.PolicyVersionV3, memory.PolicyVersionV4:
+		return nil
+	case memory.PolicyVersionV5:
+		if target != memory.PolicyVersionV5 {
+			return fmt.Errorf("app: memory-policy-v5 cannot be downgraded")
+		}
 		return nil
 	default:
 		return fmt.Errorf("app: unsupported active memory policy %q", current)

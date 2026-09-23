@@ -105,6 +105,9 @@ func ScoreRecall(policy Policy, candidate RecallCandidate, ordinal canonical.Ord
 		StateFactor: stateFactor, TemporalFactor: temporalFactor,
 		Eligible: candidate.Status == StatusActive,
 	}
+	if policy.Version == PolicyVersionV5 && candidate.ContextCompatibility == 0 {
+		result.Eligible = false
+	}
 	if !result.Eligible {
 		result.StateFactor, _ = canonical.NewRatio(0)
 		result.Score, _ = canonical.NewRatio(0)
@@ -154,6 +157,9 @@ func SelectRecall(policy Policy, candidates []RecallCandidate) (RecallSelection,
 	sort.SliceStable(result.Selected, func(left, right int) bool {
 		if result.Selected[left].Score != result.Selected[right].Score {
 			return result.Selected[left].Score > result.Selected[right].Score
+		}
+		if policy.Version == PolicyVersionV5 {
+			return result.Selected[left].Candidate.ClaimID.String() > result.Selected[right].Candidate.ClaimID.String()
 		}
 		return result.Selected[left].Candidate.ClaimID.String() < result.Selected[right].Candidate.ClaimID.String()
 	})

@@ -298,6 +298,19 @@ func DefaultPolicyV4() Policy {
 	return policy
 }
 
+// DefaultPolicyV5 ranks by the current query, without feeding Recall's own
+// selections back into its ranking. Historical usage contributions remain
+// replayable, but their accumulated salience has no V5 ranking weight.
+func DefaultPolicyV5() Policy {
+	policy := DefaultPolicyV4()
+	policy.Version = PolicyVersionV5
+	policy.Salience.SelectedContribution = 0
+	policy.Salience.PromptIncludedContribution = 0
+	policy.Recall.Weights.Context = 550_000
+	policy.Recall.Weights.Salience = 0
+	return policy
+}
+
 // ParsePolicy accepts only an exact JCS representation of a supported policy.
 // A changed fixed rule requires a new policy version; policy definitions are
 // not runtime-tunable under an existing version.
@@ -330,7 +343,7 @@ func ParsePolicy(input []byte) (Policy, canonical.CanonicalJSON, error) {
 			return Policy{}, canonical.CanonicalJSON{}, err
 		}
 		return policy, encoded, nil
-	case PolicyVersionV2, PolicyVersionV3, PolicyVersionV4:
+	case PolicyVersionV2, PolicyVersionV3, PolicyVersionV4, PolicyVersionV5:
 		var wire policyV2Wire
 		if err := decodeClosed(encoded.Bytes(), &wire); err != nil {
 			return Policy{}, canonical.CanonicalJSON{}, fmt.Errorf("%w: %v", ErrInvalidPolicy, err)
@@ -341,6 +354,8 @@ func ParsePolicy(input []byte) (Policy, canonical.CanonicalJSON, error) {
 			expected = DefaultPolicyV3()
 		} else if version == PolicyVersionV4 {
 			expected = DefaultPolicyV4()
+		} else if version == PolicyVersionV5 {
+			expected = DefaultPolicyV5()
 		}
 		if err := requireExactPolicy(encoded, expected); err != nil {
 			return Policy{}, canonical.CanonicalJSON{}, err
@@ -374,6 +389,8 @@ func (policy Policy) CanonicalJSON() (canonical.CanonicalJSON, error) {
 		expected = DefaultPolicyV3()
 	} else if policy.Version == PolicyVersionV4 {
 		expected = DefaultPolicyV4()
+	} else if policy.Version == PolicyVersionV5 {
+		expected = DefaultPolicyV5()
 	}
 	expectedWire, _ := policyWireUnchecked(expected)
 	expectedRaw, _ := json.Marshal(expectedWire)
@@ -399,7 +416,7 @@ func (policy Policy) RequireV2() error {
 // policy while preserving RequireV2 as the exact M5 compatibility check.
 func (policy Policy) RequireEnabled() error {
 	switch policy.Version {
-	case PolicyVersionV2, PolicyVersionV3, PolicyVersionV4:
+	case PolicyVersionV2, PolicyVersionV3, PolicyVersionV4, PolicyVersionV5:
 		_, err := policy.CanonicalJSON()
 		return err
 	case PolicyVersionV1:
@@ -436,7 +453,7 @@ func policyWireUnchecked(policy Policy) (any, error) {
 			MandatoryEventTypes: mandatory,
 			MemoryRecallEnabled: policy.MemoryRecallEnabled, Version: policy.Version,
 		}, nil
-	case PolicyVersionV2, PolicyVersionV3, PolicyVersionV4:
+	case PolicyVersionV2, PolicyVersionV3, PolicyVersionV4, PolicyVersionV5:
 		wire := policyV2Wire{
 			Version: policy.Version, DefinitionSchema: policy.DefinitionSchema,
 			MandatoryEventTypes:         append([]EventType(nil), policy.MandatoryEventTypes...),

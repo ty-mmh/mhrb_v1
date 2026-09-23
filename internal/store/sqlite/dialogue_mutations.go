@@ -1163,9 +1163,9 @@ func (u *canonicalUoW) loadDialogueV3LandingRecall(
 	if err != nil {
 		return dialogueV3LandingRecall{}, err
 	}
-	if policy.Version != memory.PolicyVersionV4 || !policy.MemoryRecallEnabled ||
+	if (policy.Version != memory.PolicyVersionV4 && policy.Version != memory.PolicyVersionV5) || !policy.MemoryRecallEnabled ||
 		policy.RenderingVersion != memory.RenderingVersionV2 {
-		return dialogueV3LandingRecall{}, errors.New("sqlite: dialogue-v3 Recall landing requires the exact memory-policy-v4 renderer")
+		return dialogueV3LandingRecall{}, errors.New("sqlite: dialogue-v3 Recall landing requires the supported memory-rendering-v2 policy")
 	}
 	query, err := canonical.ParseCanonicalJSON([]byte(queryRaw))
 	if err != nil {

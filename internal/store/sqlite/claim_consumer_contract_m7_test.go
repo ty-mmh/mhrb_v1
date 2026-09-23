@@ -130,7 +130,7 @@ func TestM7ErasedClaimAutomaticConsumersFilterBeforeLimit(t *testing.T) {
 		}
 		defer tx.Rollback()
 		candidates, err := (&canonicalUoW{tx: tx}).loadRecallCandidates(
-			context.Background(), fixture.residentID, head, memory.DefaultPolicyV2(),
+			context.Background(), fixture.residentID, head, memory.DefaultPolicyV2(), "",
 		)
 		if err != nil {
 			t.Fatal(err)
@@ -428,7 +428,7 @@ func TestM7EligibleClaimMissingBlobFailsIntegrityAutomaticConsumers(t *testing.T
 		}
 		defer tx.Rollback()
 		_, err = (&canonicalUoW{tx: tx}).loadRecallCandidates(
-			context.Background(), fixture.residentID, head, memory.DefaultPolicyV2(),
+			context.Background(), fixture.residentID, head, memory.DefaultPolicyV2(), "",
 		)
 		assertAutomaticIntegrity(t, err)
 	})

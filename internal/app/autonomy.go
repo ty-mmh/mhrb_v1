@@ -564,7 +564,8 @@ func (a *Application) currentAutonomousSchedulerEligible(
 	}
 	if snapshot.MemoryPolicyVersion != string(memory.PolicyVersionV2) &&
 		snapshot.MemoryPolicyVersion != string(memory.PolicyVersionV3) &&
-		snapshot.MemoryPolicyVersion != string(memory.PolicyVersionV4) {
+		snapshot.MemoryPolicyVersion != string(memory.PolicyVersionV4) &&
+		snapshot.MemoryPolicyVersion != string(memory.PolicyVersionV5) {
 		return false, nil
 	}
 	if frozenEvidence != nil && frozenMaxStaleness > 0 {

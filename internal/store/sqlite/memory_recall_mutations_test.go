@@ -66,7 +66,7 @@ func TestRecallCandidateLimitUsesFullFixedPointScore(t *testing.T) {
 		}
 		ranked = retainRankedRecallCandidate(ranked, rankedRecallCandidate{
 			candidate: candidate, score: scored.Score,
-		}, domain.MaxRecallCandidates)
+		}, domain.MaxRecallCandidates, false)
 	}
 	special := memory.RecallCandidate{
 		ClaimID: recallAssuranceID(t, domain.MaxRecallCandidates+2), Statement: "low salience but current and settled",
@@ -80,7 +80,7 @@ func TestRecallCandidateLimitUsesFullFixedPointScore(t *testing.T) {
 	}
 	ranked = retainRankedRecallCandidate(ranked, rankedRecallCandidate{
 		candidate: special, score: scored.Score,
-	}, domain.MaxRecallCandidates)
+	}, domain.MaxRecallCandidates, false)
 	if len(ranked) != domain.MaxRecallCandidates {
 		t.Fatalf("ranked candidates = %d, want %d", len(ranked), domain.MaxRecallCandidates)
 	}

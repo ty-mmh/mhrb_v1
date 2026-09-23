@@ -194,7 +194,7 @@ func NewRecallDecisionJSON(
 		CandidateLimit:       canonical.Count(policy.Recall.CandidateLimit),
 		ContextCompatibility: contextCompatibility,
 		ProjectionHead:       head,
-		ScoringVersion:       MemoryRecallPipelineVersion,
+		ScoringVersion:       recallScoringVersion(policy),
 	})
 	if err != nil {
 		return canonical.CanonicalJSON{}, canonical.CanonicalJSON{}, err
@@ -209,4 +209,11 @@ func NewRecallDecisionJSON(
 		return canonical.CanonicalJSON{}, canonical.CanonicalJSON{}, err
 	}
 	return query, constraints, nil
+}
+
+func recallScoringVersion(policy memory.Policy) string {
+	if policy.Version == memory.PolicyVersionV5 {
+		return "memory-recall-v2-bigram"
+	}
+	return MemoryRecallPipelineVersion
 }

@@ -79,7 +79,7 @@ func (u *canonicalUoW) loadDialogueRecallSnapshot(
 		return result, nil
 	}
 	result.pipelineID = pipelineID
-	result.candidates, err = u.loadRecallCandidates(ctx, residentID, result.head, result.policy)
+	result.candidates, err = u.loadRecallCandidates(ctx, residentID, result.head, result.policy, "")
 	if errors.Is(err, errRecallProjectionProvenance) {
 		result.fallback = domain.MemoryRecallProjectionProvenanceUnknown
 		result.candidates = nil
@@ -99,6 +99,7 @@ func (u *canonicalUoW) loadDialogueRecallSnapshotAt(
 	residentID canonical.ID,
 	dialogue dialogueSnapshot,
 	target domain.AssemblyTarget,
+	queryText string,
 ) (dialogueRecallSnapshot, error) {
 	policy, _, err := memory.ParsePolicy(dialogue.memoryPolicy)
 	if err != nil {
@@ -132,7 +133,7 @@ func (u *canonicalUoW) loadDialogueRecallSnapshotAt(
 		return result, nil
 	}
 	result.pipelineID = pipelineID
-	result.candidates, err = u.loadRecallCandidates(ctx, residentID, result.head, result.policy)
+	result.candidates, err = u.loadRecallCandidates(ctx, residentID, result.head, result.policy, queryText)
 	if errors.Is(err, errRecallProjectionProvenance) {
 		result.fallback = domain.MemoryRecallProjectionProvenanceUnknown
 		result.candidates = nil
@@ -310,6 +311,7 @@ func (u *canonicalUoW) loadRecallCandidates(
 	residentID canonical.ID,
 	head canonical.CommitSeq,
 	policy memory.Policy,
+	queryText string,
 ) ([]memory.RecallCandidate, error) {
 	var invalid int
 	if err := u.tx.QueryRowContext(ctx, `SELECT COUNT(*)
@@ -416,6 +418,10 @@ func (u *canonicalUoW) loadRecallCandidates(
 		return nil, err
 	}
 	contextCompatibility, _ := canonical.NewRatio(canonical.FixedPointScale)
+	var query memory.RecallQueryV5
+	if policy.Version == memory.PolicyVersionV5 {
+		query = memory.NewRecallQueryV5(queryText)
+	}
 	ranked := make([]rankedRecallCandidate, 0, domain.MaxRecallCandidates)
 	for _, item := range raw {
 		claimID, err := canonical.ParseID(item.claimRaw)
@@ -425,6 +431,9 @@ func (u *canonicalUoW) loadRecallCandidates(
 		eligible, err := loadEligibleClaimStatement(ctx, u.tx, residentID, claimID)
 		if err != nil {
 			return nil, fmt.Errorf("sqlite: validate Recall candidate %s: %w", claimID, err)
+		}
+		if policy.Version == memory.PolicyVersionV5 {
+			contextCompatibility = query.Compatibility(string(eligible.Statement))
 		}
 		salienceRatio, err := quantizeProjectionRatio(item.salience)
 		if err != nil {
@@ -451,7 +460,7 @@ func (u *canonicalUoW) loadRecallCandidates(
 		}
 		ranked = retainRankedRecallCandidate(ranked, rankedRecallCandidate{
 			candidate: candidate, score: scored.Score,
-		}, domain.MaxRecallCandidates)
+		}, domain.MaxRecallCandidates, policy.Version == memory.PolicyVersionV5)
 	}
 	result := make([]memory.RecallCandidate, 0, len(ranked))
 	for _, item := range ranked {
@@ -512,14 +521,19 @@ func retainRankedRecallCandidate(
 	ranked []rankedRecallCandidate,
 	candidate rankedRecallCandidate,
 	limit int,
+	newestFirst bool,
 ) []rankedRecallCandidate {
 	if limit < 1 {
 		return nil
 	}
 	insertAt := len(ranked)
 	for index, existing := range ranked {
+		firstOnTie := candidate.candidate.ClaimID.String() < existing.candidate.ClaimID.String()
+		if newestFirst {
+			firstOnTie = candidate.candidate.ClaimID.String() > existing.candidate.ClaimID.String()
+		}
 		if candidate.score > existing.score ||
-			(candidate.score == existing.score && candidate.candidate.ClaimID.String() < existing.candidate.ClaimID.String()) {
+			(candidate.score == existing.score && firstOnTie) {
 			insertAt = index
 			break
 		}

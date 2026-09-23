@@ -131,28 +131,32 @@ func validateMemoryPolicyActivationTransition(
 	}
 	if target.Version == current.Version {
 		if target.Version == memory.PolicyVersionV2 || target.Version == memory.PolicyVersionV3 ||
-			target.Version == memory.PolicyVersionV4 {
+			target.Version == memory.PolicyVersionV4 || target.Version == memory.PolicyVersionV5 {
 			return nil
 		}
 		return errors.New("sqlite: disabled memory-policy-v1 cannot be activated")
 	}
-	if target.Version != memory.PolicyVersionV4 {
+	if target.Version != memory.PolicyVersionV4 && target.Version != memory.PolicyVersionV5 {
 		return fmt.Errorf("sqlite: memory policy transition %s to %s is disabled; use memory-policy-v4",
 			current.Version, target.Version)
 	}
 	switch current.Version {
 	case memory.PolicyVersionV1:
 		if !value.AcknowledgeRecallEnable || !value.AcknowledgeSelfTalkExtraction {
-			return errors.New("sqlite: memory-policy-v1 to v4 requires recall-enable and self-talk-extraction acknowledgements")
+			return fmt.Errorf("sqlite: memory-policy-v1 to %s requires recall-enable and self-talk-extraction acknowledgements", target.Version)
 		}
 	case memory.PolicyVersionV2:
 		if !value.AcknowledgeSelfTalkExtraction {
-			return errors.New("sqlite: memory-policy-v2 to v4 requires self-talk-extraction acknowledgement")
+			return fmt.Errorf("sqlite: memory-policy-v2 to %s requires self-talk-extraction acknowledgement", target.Version)
 		}
 	case memory.PolicyVersionV3:
 		// V3 already enables Recall and mandatory self-talk extraction.
 	case memory.PolicyVersionV4:
-		return errors.New("sqlite: memory-policy-v4 cannot transition to a different policy version")
+		if target.Version != memory.PolicyVersionV5 {
+			return errors.New("sqlite: memory-policy-v4 can only transition to memory-policy-v5")
+		}
+	case memory.PolicyVersionV5:
+		return errors.New("sqlite: memory-policy-v5 cannot be downgraded")
 	default:
 		return fmt.Errorf("sqlite: unsupported active memory policy %q", current.Version)
 	}

@@ -223,10 +223,14 @@ func (fixture *memoryClaimMutationFixture) seedClaim(
 	subject, perspective canonical.ID,
 	evidence []seededClaimEvidence,
 	stage memory.ClaimStage,
+	statementOverride ...string,
 ) (canonical.ID, []canonical.ID) {
 	t.Helper()
 	claimID := fixture.newID(t)
 	statementText := "claim-" + claimID.String()
+	if len(statementOverride) != 0 {
+		statementText = statementOverride[0]
+	}
 	statementID := fixture.semantic.addContent(t, "A", "claim_statement", statementText, "independent")
 	normalized, err := memory.NormalizeStatementV1(statementText)
 	if err != nil {

@@ -117,7 +117,7 @@ func captureReadinessMemoryPolicyServiceCurrent(
 	if err != nil {
 		return false, nil
 	}
-	return policy.Version == memory.PolicyVersionV1 || policy.Version == memory.PolicyVersionV4, nil
+	return policy.Version == memory.PolicyVersionV1 || policy.Version == memory.PolicyVersionV4 || policy.Version == memory.PolicyVersionV5, nil
 }
 
 func captureServiceReadinessHead(ctx context.Context, tx *sql.Tx) (readiness.Head, error) {

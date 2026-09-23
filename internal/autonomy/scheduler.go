@@ -37,7 +37,8 @@ func DecideSelfTalk(policy Policy, snapshot Snapshot, trigger Trigger, timing Ev
 		return decision
 	}
 	if snapshot.MemoryPolicyVersion != MemoryPolicyVersionV3 &&
-		snapshot.MemoryPolicyVersion != MemoryPolicyVersionV4 {
+		snapshot.MemoryPolicyVersion != MemoryPolicyVersionV4 &&
+		snapshot.MemoryPolicyVersion != MemoryPolicyVersionV5 {
 		decision.BlockingReason = BlockingMemoryPolicyNotAutonomyV3
 		return decision
 	}
