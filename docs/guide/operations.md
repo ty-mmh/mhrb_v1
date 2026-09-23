@@ -35,6 +35,10 @@
 
 操作を選び、必要な入力と確認を行って実行します。**Stop dialogue first** と表示される操作は、対話停止後に行います。
 
+Residentの一覧・詳細、Diagnostics、バックアップ作成、JSONL exportも対話停止が必要です。管理画面自体は開いたままにできます。既存バックアップの **Verify backup** と、新しい保存先への **Restore backup** はこの停止要求の対象外ですが、対象パスの排他・重複確認は行われます。
+
+claimの可視性や状態を変える場合も、対話を停止し、**Memory → List memory claims / Show memory claim** で対象を確認してから **Change claim visibility / Change claim status** を使います。入力するのは文章ではなく **Resident ID** と **Claim ID**（ULID）です。置換先を要求する状態変更では、そのClaim IDも指定します。
+
 結果には終了コードと出力が表示されます。`exit_code = 0` が成功です。失敗時は出力の理由や残作業を確認してから再試行してください。利用できる40操作は[Web管理ガイド](web-administration.md#available-operations)にまとまっています。
 
 ## バックアップと復元

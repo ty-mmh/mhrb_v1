@@ -4,6 +4,8 @@ Residentとの対話や記憶をローカルに保存するアプリケーショ
 
 **応答生成には、別途Chat Completions互換の生成サービスが必要です。** モデルや生成サービス、APIキーは同梱していません。初回ビルドには依存パッケージやコンテナイメージを取得するネットワーク接続が必要です。
 
+生成サービスやモデルのchat templateによっては、複数の `system` メッセージや、厳密に交互ではない `user` / `assistant` の並びを受け付けません。現在はそのような制約を持つバックエンドとの互換性を保証していません。[生成サービスの接続条件](docs/guide/configuration.md#生成サービスとapiキー)を確認してください。
+
 ## はじめる
 
 | 実行方法 | 必要なもの | 手順 |
@@ -12,6 +14,8 @@ Residentとの対話や記憶をローカルに保存するアプリケーショ
 | Dockerで実行 | Docker Desktop（Linuxコンテナ） | [Dockerで使う](docs/guide/docker.md) |
 
 どちらも、このREADMEと `go.mod` があるフォルダーで作業します。GitリポジトリやGitHubアカウントは不要です。
+
+ネイティブ実行の対応OSはWindowsとLinuxです。macOSのネイティブ実行は未対応です。同梱のDocker構成はLinux AMD64固定で、ARM64向けの構成ではありません。
 
 ローカル版は次のコマンドでビルドします。
 
@@ -35,6 +39,8 @@ docker compose up -d --build
 ```
 
 管理画面の既定URLは [http://127.0.0.1:8788/](http://127.0.0.1:8788/) です。**Bootstrap init → approve → finalize** でResidentを作り、**Start dialogue server → Open dialogue** から会話を始めます。詳しい設定は各ガイドを参照してください。
+
+管理画面は単一利用者のローカル環境を前提としており、ログインや利用者認証はありません。Host・Originの制限は、同じ端末の別ユーザーやローカルプロセスを認証するものではありません。共有PCで使う場合は、他の利用者も管理画面を操作できる点に注意してください。[管理画面のアクセス条件](docs/guide/web-administration.md)と、対話停止が必要な[管理操作](docs/guide/operations.md#管理操作を実行する)を参照してください。
 
 ## 同梱内容
 

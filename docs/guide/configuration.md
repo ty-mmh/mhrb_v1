@@ -21,6 +21,12 @@ Docker版の設定ファイル・保存先・変更の反映方法は[Dockerで�
 
 `generation.provider` は `chat-completions` を使います。`generation.base_url` と `generation.model` は対話起動に必要です。アプリがベースURLの末尾に `/chat/completions` を追加するので、モデル一覧やチャット画面のURLは指定しません。
 
+通常の接続先にはHTTPSを使います。同じ端末の生成サービスへHTTPで接続する場合は、`http://127.0.0.1:8080/v1` のように数値のloopback IPを指定してください。`http://localhost:8080/v1` は、名前解決後にloopbackとなる場合でも許可されません。外部サービスには、そのサービスが案内する `https://` のAPIベースURLを設定します。
+
+Dockerからホスト上の生成サービスへのHTTP接続には、別途 `MAHOROBA_PROVIDER_ALLOW_DOCKER_HOST_HTTP=true` と、正確な `host.docker.internal`、明示したポート番号が必要です。例は `http://host.docker.internal:8080/v1` です。この許可は通常のローカル版では既定でOFF、同梱Docker構成ではONです。他のホスト名やTTSへの許可ではありません。詳しくは[Dockerの接続設定](docker.md#1-生成サービスとポートを設定する)を参照してください。
+
+APIの名前がChat Completions互換でも、モデルやサービスのchat templateによって受け付けるメッセージ列は異なります。本アプリは複数の `system` メッセージや、`user` / `assistant` が厳密に交互ではないメッセージ列を送る場合があります。`system` が先頭の1件だけ、またはroleの厳密な交互配置が必要なバックエンドとの互換性は現在保証していません。メッセージを結合・並べ替えする互換モードもありません。接続先の制約に合う生成サービスとモデル設定を使ってください。
+
 APIキーは `MAHOROBA_PROVIDER_API_KEY` で渡します。設定方法は[初回設定](getting-started.md#2-設定を用意する)を参照してください。TOMLへの秘密値の記載はサポートしていません。
 
 Linuxでは制約付きの秘密ファイルを指す `MAHOROBA_PROVIDER_API_KEY_FILE` も使えます。Windowsでは秘密ファイル方式は未対応です。直接値とファイル指定は併用できず、空の秘密値もエラーになります。

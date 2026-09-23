@@ -12,8 +12,8 @@ import (
 	"os"
 	"strconv"
 
-	"mahoroba.local/mahoroba/internal/fssecure"
 	"golang.org/x/sys/unix"
+	"mahoroba.local/mahoroba/internal/fssecure"
 )
 
 // captureVerifiedDatabase copies the source descriptor once into an anonymous

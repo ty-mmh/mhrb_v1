@@ -1,6 +1,6 @@
 # Dockerで使う
 
-WindowsのDocker Desktopで、管理画面と対話画面を動かす手順です。Linuxコンテナを使用します。ソースのルート（`compose.yaml` のあるフォルダ）でPowerShellから実行してください。ホストへのGoのインストールやGit情報は不要です。
+WindowsのDocker Desktopで、管理画面と対話画面を動かす手順です。同梱構成はLinux AMD64コンテナ固定で、ARM64向けの構成ではありません。ソースのルート（`compose.yaml` のあるフォルダ）でPowerShellから実行してください。ホストへのGoのインストールやGit情報は不要です。
 
 この構成はDocker専用のデータ領域を使います。ローカル実行版のResidentや設定は自動では取り込みません。初回ビルドには、ベースイメージとGo依存パッケージを取得するためのネットワーク接続が必要です。
 

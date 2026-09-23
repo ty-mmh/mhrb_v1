@@ -9,9 +9,9 @@ import (
 	"path/filepath"
 	"testing"
 
+	"golang.org/x/sys/unix"
 	"mahoroba.local/mahoroba/internal/fssecure"
 	storesqlite "mahoroba.local/mahoroba/internal/store/sqlite"
-	"golang.org/x/sys/unix"
 )
 
 func TestM7BackupSealedDatabaseSnapshotRejectsInPlaceWriteABA(t *testing.T) {

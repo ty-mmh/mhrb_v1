@@ -31,6 +31,13 @@ Dialogue has a separate explicit remote-access option described
 below. Provider and TTS credentials retain their existing environment/secret-file configuration;
 the browser has no credential or arbitrary command-line field.
 
+Administration assumes a single-user local environment and has no login or
+user authentication. Loopback Host and same-origin checks protect the browser
+boundary; they do not authenticate another OS user or a local process that can
+reach the listener. On a shared computer, other users may also operate this
+administration UI. Existing filesystem permissions and host locks remain in
+effect, but they do not add HTTP user authentication.
+
 ## Access dialogue through your Tailscale network
 
 Keep both application listeners on loopback and use Tailscale Serve for the
