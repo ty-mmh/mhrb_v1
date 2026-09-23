@@ -54,8 +54,8 @@
         "agpl-license-declaration-and-packaging",
         "operating-guidance-and-recall-continuity-documentation"
       ],
-      "bytes": 5182,
-      "sha256": "3d14f7d6b0ad0bc24b39993e354bdcc96ef13c0efe19c5bfbf3918e500e010ef"
+      "bytes": 5158,
+      "sha256": "f5a5791328e0b238526cf80910a5356ce144f8c96093704a13dc5a01d75ba3ca"
     },
     {
       "path": "Dockerfile",
