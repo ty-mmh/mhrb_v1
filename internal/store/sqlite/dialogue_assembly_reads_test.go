@@ -53,7 +53,7 @@ func TestCOV1DialogueAssemblyStopsLiveContextAtSourceEvent(t *testing.T) {
 	if result.Prepare.SourceEventID != fixture.sourceEventID || result.Prepare.Target != fixture.target {
 		t.Fatalf("assembled source/target = %s / %+v", result.Prepare.SourceEventID, result.Prepare.Target)
 	}
-	if result.Prepare.Generation.ContextPolicyVersion != domain.DialogueContextPolicyVersionV3 ||
+	if result.Prepare.Generation.ContextPolicyVersion != domain.DialogueContextPolicyVersionV4 ||
 		result.Prepare.Generation.MemoryRenderingVersion != domain.MemoryRenderingVersionV2 {
 		t.Fatalf("assembled version tuple = %s / %s",
 			result.Prepare.Generation.ContextPolicyVersion,
@@ -346,7 +346,7 @@ func newDialogueAssemblyReadFixture(t *testing.T) *dialogueAssemblyReadFixture {
 	residentID := dialogueAssemblyReadParseID(t, semantic.resident["A"])
 
 	pipelineID := dialogueAssemblyReadParseID(t, semantic.ids.new())
-	pipeline, err := domain.DialoguePipelineDefinition(pipelineID, domain.DialoguePipelineVersionV3)
+	pipeline, err := domain.DialoguePipelineDefinition(pipelineID, domain.DialoguePipelineVersionV4)
 	if err != nil {
 		t.Fatal(err)
 	}

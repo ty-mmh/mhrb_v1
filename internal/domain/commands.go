@@ -39,7 +39,7 @@ func GlobalBootstrapCommand(value GlobalBootstrap) canonical.Command {
 				}
 			}
 			return ValidateExactDialoguePipelineDefinition(PipelineVersionDefinition{
-				ID: value.PipelineVersionID, Kind: "dialogue", VersionKey: DialoguePipelineVersionV3,
+				ID: value.PipelineVersionID, Kind: "dialogue", VersionKey: DialoguePipelineVersionV4,
 				Definition: value.PipelineDefinition,
 			})
 		},

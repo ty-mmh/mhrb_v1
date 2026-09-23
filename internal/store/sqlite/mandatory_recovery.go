@@ -649,11 +649,11 @@ func resolveCancellationDialoguePipeline(
 		JOIN canonical_commits pipeline_commit
 		  ON pipeline_commit.canonical_commit_id = pipeline.canonical_commit_id
 		WHERE pipeline.pipeline_kind = 'dialogue'
-		  AND pipeline.version_key IN (?, ?, ?)
+		  AND pipeline.version_key IN (?, ?, ?, ?)
 		  AND pipeline_commit.commit_seq <= ?
 		ORDER BY pipeline_commit.commit_seq DESC, pipeline.pipeline_version_id DESC LIMIT 1`,
 		domain.DialoguePipelineVersionV1, domain.DialoguePipelineVersionV2,
-		domain.DialoguePipelineVersionV3, through,
+		domain.DialoguePipelineVersionV3, domain.DialoguePipelineVersionV4, through,
 	).Scan(&rawID, &versionKey, &rawDefinition)
 	if errors.Is(err, sql.ErrNoRows) {
 		return canonical.ID{}, "", false, nil

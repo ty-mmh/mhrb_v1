@@ -714,7 +714,7 @@ func setLegacyDialogueExecutionContractForEnvelopeTest(
 		var recordedAt int64
 		if queryErr := database.QueryRow(`SELECT canonical_commit_id, recorded_at, recorded_tz
 			FROM pipeline_versions WHERE pipeline_kind = 'dialogue' AND version_key = ?`,
-			domain.DialoguePipelineVersionV3).Scan(&commitID, &recordedAt, &recordedTZ); queryErr != nil {
+			domain.DialoguePipelineVersionV4).Scan(&commitID, &recordedAt, &recordedTZ); queryErr != nil {
 			t.Fatal(queryErr)
 		}
 		if _, insertErr := database.Exec(`INSERT INTO pipeline_versions(

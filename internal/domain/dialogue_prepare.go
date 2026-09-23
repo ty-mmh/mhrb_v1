@@ -138,15 +138,15 @@ type PrepareDialogue struct {
 type PrepareDialogueResolution string
 
 const (
-	PrepareDialoguePreparedCurrentV3         PrepareDialogueResolution = "prepared_current_v3"
-	PrepareDialogueExistingCurrentV3         PrepareDialogueResolution = "existing_current_v3"
+	PrepareDialoguePreparedCurrentV4         PrepareDialogueResolution = "prepared_current_v4"
+	PrepareDialogueExistingCurrentV4         PrepareDialogueResolution = "existing_current_v4"
 	PrepareDialogueDispatchExistingFrozenRun PrepareDialogueResolution = "dispatch_existing_frozen_run"
 )
 
 func (resolution PrepareDialogueResolution) Validate() error {
 	switch resolution {
-	case PrepareDialoguePreparedCurrentV3,
-		PrepareDialogueExistingCurrentV3,
+	case PrepareDialoguePreparedCurrentV4,
+		PrepareDialogueExistingCurrentV4,
 		PrepareDialogueDispatchExistingFrozenRun:
 		return nil
 	default:
@@ -217,7 +217,7 @@ func validatePrepareDialogue(value PrepareDialogue) error {
 		return err
 	}
 	if err := ValidateNewDialogueNormalExecutionContract(DialogueExecutionContract{
-		PipelineVersionKey:     DialoguePipelineVersionV3,
+		PipelineVersionKey:     DialoguePipelineVersionV4,
 		PromptTemplateVersion:  generation.PromptTemplateVersion,
 		ContextPolicyVersion:   generation.ContextPolicyVersion,
 		MemoryRenderingVersion: generation.MemoryRenderingVersion,

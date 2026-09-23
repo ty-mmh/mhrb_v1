@@ -234,6 +234,7 @@ func TestCOV5NormalUIContinuationBackfillsImmediatelyPreviousExchange(t *testing
 			name: "English", text: "Pick up where we left off",
 			wantMarkers: `["continuation_request","prior_context_reference"]`,
 		},
+		{name: "ordinary message", text: "What about tomorrow?", wantMarkers: `[]`},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
@@ -459,7 +460,7 @@ func TestCOV5CommitAOnlyRestartReconstructsAutomaticBackfillFromSourceBytes(t *t
 	}
 
 	fixture.clock.Advance(31 * time.Minute)
-	current, err := fixture.application.Ingress(ctx, "前回の続きを再開しよう")
+	current, err := fixture.application.Ingress(ctx, "What about tomorrow?")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -537,7 +538,7 @@ func TestCOV5ErasedPreviousExchangeDoesNotFallBackToOlderConversation(t *testing
 	}
 	eraseEventContentForTest(t, fixture.store.Path(), residentContentID)
 	fixture.clock.Advance(31 * time.Minute)
-	current, err := fixture.application.Ingress(ctx, "前回の続きを再開しよう")
+	current, err := fixture.application.Ingress(ctx, "What about tomorrow?")
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -12,7 +12,6 @@ import (
 	"mahoroba.local/mahoroba/internal/canonical"
 	"mahoroba.local/mahoroba/internal/domain"
 	"mahoroba.local/mahoroba/internal/memory"
-	"mahoroba.local/mahoroba/internal/surfaceref"
 )
 
 type dialogueInputCandidate struct {
@@ -123,14 +122,14 @@ func (u *canonicalUoW) loadLiveDialogueInputs(ctx context.Context, current domai
 	}
 
 	live, err := u.loadPresentLiveDialogueInputs(ctx, current, session.StartSeq, limit, explicit)
-	if err != nil || len(live) != 0 {
-		return live, err
-	}
-	markers, err := surfaceref.Detect([]byte(current.Content))
 	if err != nil {
-		return nil, fmt.Errorf("sqlite: detect dialogue source surface reference: %w", err)
+		return nil, err
 	}
-	if len(markers) == 0 {
+	// Session statistics retain the idle boundary. Context-v4 carries only the
+	// immediately preceding exchange while the current session still has room.
+	// Count raw session events as well, so erased rows never open older slots.
+	remaining := int(limit) - len(session.Events)
+	if remaining <= 0 {
 		return live, nil
 	}
 	initiative, err := u.loadInitiativeDialogueInput(ctx, current, explicit)
@@ -140,17 +139,49 @@ func (u *canonicalUoW) loadLiveDialogueInputs(ctx context.Context, current domai
 	if initiative != nil {
 		return live, nil
 	}
-	return u.loadAutomaticDialogueBackfill(ctx, current, session.StartSeq)
+	var boundary bool
+	if err := u.tx.QueryRowContext(ctx, `SELECT EXISTS(SELECT 1 FROM events e INDEXED BY idx_events_resident_type_seq
+		JOIN canonical_commits c ON c.canonical_commit_id = e.canonical_commit_id
+		WHERE e.resident_id = ? AND e.seq >= ? AND e.seq < ? AND c.commit_seq <= ?
+		 AND e.event_type IN ('user_message', 'resident_message', 'outbound_initiative')
+		 AND (e.event_type = 'outbound_initiative' OR
+		      (e.event_type IN ('user_message', 'resident_message') AND e.visibility <> 'conversation')))`,
+		current.ResidentID.String(), session.StartSeq.Int64(), current.Seq.Int64(), u.metadata.CommitSeq.Int64()).Scan(&boundary); err != nil {
+		return nil, err
+	}
+	if boundary {
+		return live, nil
+	}
+	backfill, err := u.loadAutomaticDialogueBackfill(ctx, current, session.StartSeq)
+	if err != nil {
+		return nil, err
+	}
+	if len(backfill) > remaining || len(backfill)+len(live) > int(limit)-1 {
+		return live, nil
+	}
+	for _, candidate := range backfill {
+		if _, duplicate := explicit[*candidate.sourceID]; duplicate {
+			return live, nil
+		}
+	}
+	return append(backfill, live...), nil
 }
 
 const automaticDialogueBackfillEventTailQuery = `SELECT e.event_id, e.seq, e.event_type, e.content_id,
-		object.erasure_state, blob.content
+		object.erasure_state, blob.content, e.visibility, e.actor_principal_id,
+		e.target_principal_id, commit_row.commit_seq,
+		generation.idempotency_key,
+		EXISTS(SELECT 1 FROM generation_run_outcomes outcome
+		 JOIN canonical_commits landed ON landed.canonical_commit_id = outcome.canonical_commit_id
+		 WHERE outcome.generation_run_id = e.generation_run_id AND outcome.state = 'succeeded'
+		  AND outcome.output_content_id = e.content_id AND landed.commit_seq <= commit_row.commit_seq)
 	FROM events e INDEXED BY idx_events_resident_type_seq
 	JOIN canonical_commits commit_row ON commit_row.canonical_commit_id = e.canonical_commit_id
 	JOIN content_objects object ON object.content_id = e.content_id
+	LEFT JOIN generation_runs generation ON generation.generation_run_id = e.generation_run_id AND generation.resident_id = e.resident_id AND generation.purpose = 'dialogue'
 	LEFT JOIN blobs blob ON blob.dedupe_scope_id = object.owner_resident_id
 	 AND blob.hash_algorithm = object.blob_hash_algorithm AND blob.blob_hash = object.blob_hash
-	WHERE e.resident_id = ? AND e.event_type = ? AND e.visibility = 'conversation'
+	WHERE e.resident_id = ? AND e.event_type = ?
 	  AND e.seq < ? AND commit_row.commit_seq <= ?
 	ORDER BY e.seq DESC LIMIT 2`
 
@@ -168,6 +199,12 @@ func (u *canonicalUoW) loadAutomaticDialogueBackfill(
 		eventType    string
 		contentID    canonical.ID
 		erasureState string
+		visibility   string
+		actor        string
+		target       sql.NullString
+		commitSeq    int64
+		obligation   sql.NullString
+		succeeded    bool
 		content      []byte
 	}
 	loaded := make([]backfillRow, 0, 6)
@@ -180,9 +217,12 @@ func (u *canonicalUoW) loadAutomaticDialogueBackfill(
 		}
 		for rows.Next() {
 			var eventRaw, eventType, contentRaw, erasureState string
-			var rawSeq int64
+			var rawSeq, commitSeq int64
+			var visibility, actor string
+			var target, obligation sql.NullString
+			var succeeded bool
 			var content []byte
-			if err := rows.Scan(&eventRaw, &rawSeq, &eventType, &contentRaw, &erasureState, &content); err != nil {
+			if err := rows.Scan(&eventRaw, &rawSeq, &eventType, &contentRaw, &erasureState, &content, &visibility, &actor, &target, &commitSeq, &obligation, &succeeded); err != nil {
 				_ = rows.Close()
 				return nil, err
 			}
@@ -204,6 +244,7 @@ func (u *canonicalUoW) loadAutomaticDialogueBackfill(
 			loaded = append(loaded, backfillRow{
 				eventID: eventID, seq: seq, eventType: eventType, contentID: contentID,
 				erasureState: erasureState, content: append([]byte(nil), content...),
+				visibility: visibility, actor: actor, target: target, commitSeq: commitSeq, obligation: obligation, succeeded: succeeded,
 			})
 		}
 		if err := rows.Err(); err != nil {
@@ -223,7 +264,8 @@ func (u *canonicalUoW) loadAutomaticDialogueBackfill(
 	}
 	selected := loaded[:1]
 	if loaded[0].eventType == "resident_message" {
-		if len(loaded) < 2 || loaded[1].eventType != "user_message" {
+		if len(loaded) < 2 || loaded[1].eventType != "user_message" ||
+			!loaded[0].succeeded || loaded[0].obligation.String != domain.DialogueObligation(loaded[1].eventID) {
 			return nil, nil
 		}
 		selected = loaded[:2]
@@ -231,11 +273,35 @@ func (u *canonicalUoW) loadAutomaticDialogueBackfill(
 		return nil, nil
 	}
 	for _, event := range selected {
-		if event.erasureState != "present" {
+		if event.erasureState != "present" || event.visibility != "conversation" {
 			return nil, nil
 		}
 		if event.content == nil {
 			return nil, errors.New("sqlite: automatic dialogue Backfill content blob is unavailable")
+		}
+	}
+	// Never cross a different participant or resident lifecycle. A missing,
+	// erased, or unrelated newest row is a boundary, not a reason to scan back.
+	for _, event := range selected {
+		if current.TargetPrincipalID == nil {
+			return nil, nil
+		}
+		actor, target := current.ActorPrincipalID.String(), current.TargetPrincipalID.String()
+		if event.eventType == "resident_message" {
+			actor, target = target, actor
+		}
+		if event.actor != actor || !event.target.Valid || event.target.String != target {
+			return nil, nil
+		}
+		var reactivated bool
+		if err := u.tx.QueryRowContext(ctx, `SELECT EXISTS(SELECT 1 FROM resident_status_transitions t
+		 JOIN canonical_commits c ON c.canonical_commit_id = t.canonical_commit_id
+		 WHERE t.resident_id = ? AND t.to_status = 'active' AND c.commit_seq >= ? AND c.commit_seq <= ?)`,
+			current.ResidentID.String(), event.commitSeq, u.metadata.CommitSeq.Int64()).Scan(&reactivated); err != nil {
+			return nil, err
+		}
+		if reactivated {
+			return nil, nil
 		}
 	}
 	result := make([]dialogueInputCandidate, 0, len(selected))

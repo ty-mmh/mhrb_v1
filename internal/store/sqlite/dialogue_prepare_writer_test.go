@@ -36,7 +36,7 @@ func TestCOV1PrepareDialoguePersistsCommitBAtomicallyAfterUnrelatedHeadAdvance(t
 		_ = uow.Rollback(context.Background())
 		t.Fatalf("PrepareDialogue: %v", err)
 	}
-	if result.Resolution != domain.PrepareDialoguePreparedCurrentV3 || result.RunID != prepare.Generation.RunID {
+	if result.Resolution != domain.PrepareDialoguePreparedCurrentV4 || result.RunID != prepare.Generation.RunID {
 		t.Fatalf("PrepareDialogue result = %+v", result)
 	}
 	if err := uow.Commit(context.Background()); err != nil {
@@ -237,7 +237,7 @@ func TestCOV1PrepareDialogueStableObligationConvergesToExistingRun(t *testing.T)
 		_ = uow.Rollback(context.Background())
 		t.Fatalf("replay error = %v, want ErrNoMutation", err)
 	}
-	if result.Resolution != domain.PrepareDialogueExistingCurrentV3 || result.RunID != first.RunID {
+	if result.Resolution != domain.PrepareDialogueExistingCurrentV4 || result.RunID != first.RunID {
 		_ = uow.Rollback(context.Background())
 		t.Fatalf("replay result = %+v, want existing %s", result, first.RunID)
 	}
@@ -1012,6 +1012,12 @@ func newDialoguePrepareWriterFixtureWithPolicyAndSource(
 	base := newDialogueAssemblyReadFixture(t)
 	fixture := &dialoguePrepareWriterFixture{dialogueAssemblyReadFixture: base}
 	ctx := context.Background()
+	// The shared read fixture's older placeholder events have no real payload
+	// commitments. End that synthetic history at an erased event; tests that
+	// need Backfill seed an intact Canonical event below.
+	mustExec(t, fixture.semantic.db, `UPDATE content_objects
+	 SET erasure_state = 'erased', blob_hash = NULL, commitment_salt = NULL
+	 WHERE content_id = (SELECT content_id FROM events WHERE event_id = ?)`, fixture.laterEventID.String())
 
 	activationTime := canonical.Instant(semanticTime + 6)
 	uow := fixture.begin(t, 7, activationTime)

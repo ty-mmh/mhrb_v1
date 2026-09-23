@@ -10,10 +10,12 @@ const (
 	DialoguePipelineVersionV1       = "dialogue-v1"
 	DialoguePipelineVersionV2       = "dialogue-v2"
 	DialoguePipelineVersionV3       = "dialogue-v3"
+	DialoguePipelineVersionV4       = "dialogue-v4"
 	DialoguePromptTemplateVersionV1 = "dialogue-v1"
 	DialogueContextPolicyVersionV1  = "dialogue-context-v1"
 	DialogueContextPolicyVersionV2  = "dialogue-context-v2"
 	DialogueContextPolicyVersionV3  = "dialogue-context-v3"
+	DialogueContextPolicyVersionV4  = "dialogue-context-v4"
 	MemoryRenderingVersionNoneV1    = "memory-none-v1"
 	MemoryRenderingVersionV1        = "memory-rendering-v1"
 	MemoryRenderingVersionV2        = "memory-rendering-v2"
@@ -40,12 +42,14 @@ const (
 type DialogueExecutionClass string
 
 const (
-	DialogueExecutionLegacyNormal        DialogueExecutionClass = "legacy_normal"
-	DialogueExecutionPriorSplitNormal    DialogueExecutionClass = "prior_split_normal"
-	DialogueExecutionCurrentNormal       DialogueExecutionClass = "current_normal"
-	DialogueExecutionSyntheticLegacy     DialogueExecutionClass = "synthetic_legacy"
-	DialogueExecutionSyntheticPriorSplit DialogueExecutionClass = "synthetic_prior_split"
-	DialogueExecutionSyntheticCurrent    DialogueExecutionClass = "synthetic_current"
+	DialogueExecutionLegacyNormal          DialogueExecutionClass = "legacy_normal"
+	DialogueExecutionPriorSplitNormal      DialogueExecutionClass = "prior_split_normal"
+	DialogueExecutionPriorBoundedNormal    DialogueExecutionClass = "prior_bounded_normal"
+	DialogueExecutionCurrentNormal         DialogueExecutionClass = "current_normal"
+	DialogueExecutionSyntheticLegacy       DialogueExecutionClass = "synthetic_legacy"
+	DialogueExecutionSyntheticPriorSplit   DialogueExecutionClass = "synthetic_prior_split"
+	DialogueExecutionSyntheticPriorBounded DialogueExecutionClass = "synthetic_prior_bounded"
+	DialogueExecutionSyntheticCurrent      DialogueExecutionClass = "synthetic_current"
 )
 
 func LegacyDialogueNormalExecutionContract() DialogueExecutionContract {
@@ -62,10 +66,17 @@ func PriorSplitDialogueNormalExecutionContract() DialogueExecutionContract {
 	}
 }
 
-func CurrentDialogueNormalExecutionContract() DialogueExecutionContract {
+func PriorBoundedDialogueNormalExecutionContract() DialogueExecutionContract {
 	return DialogueExecutionContract{
 		PipelineVersionKey: DialoguePipelineVersionV3, PromptTemplateVersion: DialoguePromptTemplateVersionV1,
 		ContextPolicyVersion: DialogueContextPolicyVersionV3, MemoryRenderingVersion: MemoryRenderingVersionV2,
+	}
+}
+
+func CurrentDialogueNormalExecutionContract() DialogueExecutionContract {
+	return DialogueExecutionContract{
+		PipelineVersionKey: DialoguePipelineVersionV4, PromptTemplateVersion: DialoguePromptTemplateVersionV1,
+		ContextPolicyVersion: DialogueContextPolicyVersionV4, MemoryRenderingVersion: MemoryRenderingVersionV2,
 	}
 }
 
@@ -82,6 +93,11 @@ func SyntheticDialogueExecutionContract(pipelineVersionKey string) (DialogueExec
 		return DialogueExecutionContract{
 			PipelineVersionKey: DialoguePipelineVersionV3, PromptTemplateVersion: DialoguePromptTemplateVersionV1,
 			ContextPolicyVersion: DialogueContextPolicyVersionV3, MemoryRenderingVersion: MemoryRenderingVersionNoneV1,
+		}, nil
+	case DialoguePipelineVersionV4:
+		return DialogueExecutionContract{
+			PipelineVersionKey: DialoguePipelineVersionV4, PromptTemplateVersion: DialoguePromptTemplateVersionV1,
+			ContextPolicyVersion: DialogueContextPolicyVersionV4, MemoryRenderingVersion: MemoryRenderingVersionNoneV1,
 		}, nil
 	default:
 		return DialogueExecutionContract{}, fmt.Errorf("domain: unsupported dialogue pipeline version %q", pipelineVersionKey)
@@ -100,18 +116,23 @@ func ClassifyPersistedDialogueExecutionContract(actual DialogueExecutionContract
 			return DialogueExecutionLegacyNormal, nil
 		case PriorSplitDialogueNormalExecutionContract():
 			return DialogueExecutionPriorSplitNormal, nil
+		case PriorBoundedDialogueNormalExecutionContract():
+			return DialogueExecutionPriorBoundedNormal, nil
 		case CurrentDialogueNormalExecutionContract():
 			return DialogueExecutionCurrentNormal, nil
 		}
 	case DialogueEnvelopeSyntheticNoDispatch:
 		legacy, _ := SyntheticDialogueExecutionContract(DialoguePipelineVersionV1)
 		priorSplit, _ := SyntheticDialogueExecutionContract(DialoguePipelineVersionV2)
-		current, _ := SyntheticDialogueExecutionContract(DialoguePipelineVersionV3)
+		priorBounded, _ := SyntheticDialogueExecutionContract(DialoguePipelineVersionV3)
+		current, _ := SyntheticDialogueExecutionContract(DialoguePipelineVersionV4)
 		switch actual {
 		case legacy:
 			return DialogueExecutionSyntheticLegacy, nil
 		case priorSplit:
 			return DialogueExecutionSyntheticPriorSplit, nil
+		case priorBounded:
+			return DialogueExecutionSyntheticPriorBounded, nil
 		case current:
 			return DialogueExecutionSyntheticCurrent, nil
 		}
@@ -153,11 +174,13 @@ func ValidateDialogueCancellationVersionContract(actual GenerationVersionContrac
 	allowed := []DialogueExecutionContract{
 		LegacyDialogueNormalExecutionContract(),
 		PriorSplitDialogueNormalExecutionContract(),
+		PriorBoundedDialogueNormalExecutionContract(),
 		CurrentDialogueNormalExecutionContract(),
 	}
 	priorSplitSynthetic, _ := SyntheticDialogueExecutionContract(DialoguePipelineVersionV2)
-	currentSynthetic, _ := SyntheticDialogueExecutionContract(DialoguePipelineVersionV3)
-	allowed = append(allowed, priorSplitSynthetic, currentSynthetic)
+	priorBoundedSynthetic, _ := SyntheticDialogueExecutionContract(DialoguePipelineVersionV3)
+	currentSynthetic, _ := SyntheticDialogueExecutionContract(DialoguePipelineVersionV4)
+	allowed = append(allowed, priorSplitSynthetic, priorBoundedSynthetic, currentSynthetic)
 	for _, candidate := range allowed {
 		if actual.PromptTemplateVersion == candidate.PromptTemplateVersion &&
 			actual.ContextPolicyVersion == candidate.ContextPolicyVersion &&
@@ -175,7 +198,7 @@ func DialoguePipelineDefinition(id canonical.ID, versionKey string) (PipelineVer
 		return PipelineVersionDefinition{}, err
 	}
 	if versionKey != DialoguePipelineVersionV1 && versionKey != DialoguePipelineVersionV2 &&
-		versionKey != DialoguePipelineVersionV3 {
+		versionKey != DialoguePipelineVersionV3 && versionKey != DialoguePipelineVersionV4 {
 		return PipelineVersionDefinition{}, fmt.Errorf("domain: unsupported dialogue pipeline version %q", versionKey)
 	}
 	definition, err := canonical.MarshalCanonical(struct {

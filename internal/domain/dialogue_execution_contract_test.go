@@ -9,6 +9,8 @@ import (
 func TestCOV2DialogueExecutionContractClassifiesOnlyExactTuples(t *testing.T) {
 	legacy := LegacyDialogueNormalExecutionContract()
 	priorSplit := PriorSplitDialogueNormalExecutionContract()
+	priorBounded := PriorBoundedDialogueNormalExecutionContract()
+	priorBoundedSynthetic, _ := SyntheticDialogueExecutionContract(DialoguePipelineVersionV3)
 	current := CurrentDialogueNormalExecutionContract()
 	legacySynthetic, err := SyntheticDialogueExecutionContract(DialoguePipelineVersionV1)
 	if err != nil {
@@ -18,7 +20,7 @@ func TestCOV2DialogueExecutionContractClassifiesOnlyExactTuples(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	currentSynthetic, err := SyntheticDialogueExecutionContract(DialoguePipelineVersionV3)
+	currentSynthetic, err := SyntheticDialogueExecutionContract(DialoguePipelineVersionV4)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -30,6 +32,8 @@ func TestCOV2DialogueExecutionContractClassifiesOnlyExactTuples(t *testing.T) {
 	}{
 		{name: "legacy normal", value: legacy, kind: DialogueEnvelopeNormal, want: DialogueExecutionLegacyNormal},
 		{name: "prior split normal", value: priorSplit, kind: DialogueEnvelopeNormal, want: DialogueExecutionPriorSplitNormal},
+		{name: "prior bounded normal", value: priorBounded, kind: DialogueEnvelopeNormal, want: DialogueExecutionPriorBoundedNormal},
+		{name: "prior bounded synthetic", value: priorBoundedSynthetic, kind: DialogueEnvelopeSyntheticNoDispatch, want: DialogueExecutionSyntheticPriorBounded},
 		{name: "current normal", value: current, kind: DialogueEnvelopeNormal, want: DialogueExecutionCurrentNormal},
 		{name: "legacy synthetic", value: legacySynthetic, kind: DialogueEnvelopeSyntheticNoDispatch, want: DialogueExecutionSyntheticLegacy},
 		{name: "prior split synthetic", value: priorSplitSynthetic, kind: DialogueEnvelopeSyntheticNoDispatch, want: DialogueExecutionSyntheticPriorSplit},
@@ -56,7 +60,7 @@ func TestCOV2DialogueExecutionContractRejectsMixedAndWrongUseTuples(t *testing.T
 	if err := ValidateDialogueDispatchExecutionContract(mixed); err == nil {
 		t.Fatal("mixed tuple was accepted for dispatch")
 	}
-	currentSynthetic, err := SyntheticDialogueExecutionContract(DialoguePipelineVersionV3)
+	currentSynthetic, err := SyntheticDialogueExecutionContract(DialoguePipelineVersionV4)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -82,15 +86,18 @@ func TestCOV2DialogueCancellationValidatorAllowsOnlyCompletePersistedOrSynthetic
 	if err != nil {
 		t.Fatal(err)
 	}
-	currentSynthetic, err := SyntheticDialogueExecutionContract(DialoguePipelineVersionV3)
+	currentSynthetic, err := SyntheticDialogueExecutionContract(DialoguePipelineVersionV4)
 	if err != nil {
 		t.Fatal(err)
 	}
+	priorBoundedSynthetic, _ := SyntheticDialogueExecutionContract(DialoguePipelineVersionV3)
 	for _, contract := range []DialogueExecutionContract{
 		LegacyDialogueNormalExecutionContract(),
 		PriorSplitDialogueNormalExecutionContract(),
 		CurrentDialogueNormalExecutionContract(),
 		priorSplitSynthetic,
+		PriorBoundedDialogueNormalExecutionContract(),
+		priorBoundedSynthetic,
 		currentSynthetic,
 	} {
 		if err := ValidateDialogueCancellationVersionContract(GenerationVersionContract{
@@ -135,7 +142,7 @@ func TestCOV2DialoguePipelineDefinitionIsExactAndVersioned(t *testing.T) {
 
 func TestCOV2GlobalBootstrapRequiresExactCurrentDialogueDefinition(t *testing.T) {
 	pipelineID := mustProjectionTestIDForDialogueContract(t, "01ARZ3NDEKTSV4RRFFQ69G5FAV")
-	exact, err := DialoguePipelineDefinition(pipelineID, DialoguePipelineVersionV3)
+	exact, err := DialoguePipelineDefinition(pipelineID, DialoguePipelineVersionV4)
 	if err != nil {
 		t.Fatal(err)
 	}

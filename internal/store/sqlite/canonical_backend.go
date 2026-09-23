@@ -147,7 +147,7 @@ func (u *canonicalUoW) InsertGlobalBootstrap(ctx context.Context, value domain.G
 		return errors.New("sqlite: global bootstrap requires global scope")
 	}
 	if err := domain.ValidateExactDialoguePipelineDefinition(domain.PipelineVersionDefinition{
-		ID: value.PipelineVersionID, Kind: "dialogue", VersionKey: domain.DialoguePipelineVersionV3,
+		ID: value.PipelineVersionID, Kind: "dialogue", VersionKey: domain.DialoguePipelineVersionV4,
 		Definition: value.PipelineDefinition,
 	}); err != nil {
 		return err
@@ -168,7 +168,7 @@ func (u *canonicalUoW) InsertGlobalBootstrap(ctx context.Context, value domain.G
 	if _, err := u.tx.ExecContext(ctx, `INSERT INTO pipeline_versions(
 		pipeline_version_id, canonical_commit_id, pipeline_kind, version_key, definition, recorded_at, recorded_tz
 	) VALUES (?, ?, 'dialogue', ?, ?, ?, ?)`, value.PipelineVersionID.String(), m.CommitID.String(),
-		domain.DialoguePipelineVersionV3, value.PipelineDefinition.String(), m.CommittedAt.UnixMicro(), m.CommittedTZ.String()); err != nil {
+		domain.DialoguePipelineVersionV4, value.PipelineDefinition.String(), m.CommittedAt.UnixMicro(), m.CommittedTZ.String()); err != nil {
 		return fmt.Errorf("insert dialogue pipeline: %w", err)
 	}
 	if _, err := u.tx.ExecContext(ctx, `INSERT INTO sessionization_policy_versions(

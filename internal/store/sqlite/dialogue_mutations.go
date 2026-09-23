@@ -932,7 +932,7 @@ func (u *canonicalUoW) revalidateDialogueInputsAtLanding(ctx context.Context, ru
 	var currentPolicy *memory.Policy
 	var currentSource *preparedDialogueEvent
 	var currentHead canonical.CommitSeq
-	if executionClass == domain.DialogueExecutionCurrentNormal {
+	if executionClass == domain.DialogueExecutionCurrentNormal || executionClass == domain.DialogueExecutionPriorBoundedNormal {
 		if runCommitSeq <= 1 {
 			return errors.New("sqlite: dialogue-v3 run has no pre-Commit-B source ceiling")
 		}
@@ -968,7 +968,7 @@ func (u *canonicalUoW) revalidateDialogueInputsAtLanding(ctx context.Context, ru
 		}
 		currentPolicy = &loadedPolicy
 	}
-	if executionClass == domain.DialogueExecutionCurrentNormal && prepare.RecallRunID != nil {
+	if (executionClass == domain.DialogueExecutionCurrentNormal || executionClass == domain.DialogueExecutionPriorBoundedNormal) && prepare.RecallRunID != nil {
 		loaded, loadErr := u.loadDialogueV3LandingRecall(
 			ctx, prepare, runCommitID, runCommitSeq,
 		)
@@ -1037,7 +1037,7 @@ func (u *canonicalUoW) revalidateDialogueInputsAtLanding(ctx context.Context, ru
 			validateErr = u.validateGenerationSource(ctx, prepare, input, true)
 		case domain.DialogueExecutionPriorSplitNormal:
 			validateErr = u.validateGenerationSource(ctx, prepare, input, false)
-		case domain.DialogueExecutionCurrentNormal:
+		case domain.DialogueExecutionCurrentNormal, domain.DialogueExecutionPriorBoundedNormal:
 			if currentSource == nil || currentPolicy == nil {
 				return errors.New("sqlite: dialogue-v3 Landing source envelope is incomplete")
 			}
@@ -1096,7 +1096,7 @@ func (u *canonicalUoW) revalidateDialogueInputsAtLanding(ctx context.Context, ru
 	if err := rows.Err(); err != nil {
 		return err
 	}
-	if executionClass == domain.DialogueExecutionCurrentNormal {
+	if executionClass == domain.DialogueExecutionCurrentNormal || executionClass == domain.DialogueExecutionPriorBoundedNormal {
 		if currentInputs != 1 || runtimeInputs != 1 || currentSource == nil {
 			return errors.New("sqlite: dialogue-v3 Landing lacks exact current/runtime inputs")
 		}

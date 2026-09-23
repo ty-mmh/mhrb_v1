@@ -11,7 +11,7 @@ import (
 	store "mahoroba.local/mahoroba/internal/store/sqlite"
 )
 
-func TestCOV56StartupRegistrationPreservesV1V2AndIsIdempotent(t *testing.T) {
+func TestCOV56StartupRegistrationPreservesV1V2V3AndIsIdempotent(t *testing.T) {
 	ctx := context.Background()
 	database, err := store.Open(ctx, filepath.Join(t.TempDir(), "startup-registration.db"))
 	if err != nil {
@@ -49,20 +49,28 @@ func TestCOV56StartupRegistrationPreservesV1V2AndIsIdempotent(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	priorBoundedID, err := ids.New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	priorBounded, err := domain.DialoguePipelineDefinition(priorBoundedID, domain.DialoguePipelineVersionV3)
+	if err != nil {
+		t.Fatal(err)
+	}
 	if _, err := writer.Submit(ctx, domain.RegisterPipelineVersionsCommand(domain.RegisterPipelineVersions{
-		Versions: []domain.PipelineVersionDefinition{legacy, priorSplit},
+		Versions: []domain.PipelineVersionDefinition{legacy, priorSplit, priorBounded},
 	})); err != nil {
 		t.Fatal(err)
 	}
 
-	if err := registerDialogueV3(ctx, writer, ids); err != nil {
+	if err := registerDialogueV4(ctx, writer, ids); err != nil {
 		t.Fatal(err)
 	}
 	var commitsAfterFirst int
 	if err := database.Reader().QueryRowContext(ctx, `SELECT count(*) FROM canonical_commits`).Scan(&commitsAfterFirst); err != nil {
 		t.Fatal(err)
 	}
-	if err := registerDialogueV3(ctx, writer, ids); err != nil {
+	if err := registerDialogueV4(ctx, writer, ids); err != nil {
 		t.Fatalf("idempotent startup registration: %v", err)
 	}
 
@@ -73,8 +81,8 @@ func TestCOV56StartupRegistrationPreservesV1V2AndIsIdempotent(t *testing.T) {
 	if err := database.Reader().QueryRowContext(ctx, `SELECT count(*) FROM canonical_commits`).Scan(&commitsAfterRetry); err != nil {
 		t.Fatal(err)
 	}
-	if dialogueRows != 3 || commitsAfterFirst != 2 || commitsAfterRetry != commitsAfterFirst {
-		t.Fatalf("registration state = rows %d / first commits %d / retry commits %d, want 3 / 2 / 2",
+	if dialogueRows != 4 || commitsAfterFirst != 2 || commitsAfterRetry != commitsAfterFirst {
+		t.Fatalf("registration state = rows %d / first commits %d / retry commits %d, want 4 / 2 / 2",
 			dialogueRows, commitsAfterFirst, commitsAfterRetry)
 	}
 
@@ -94,20 +102,28 @@ func TestCOV56StartupRegistrationPreservesV1V2AndIsIdempotent(t *testing.T) {
 	if storedPriorSplitID != priorSplitID.String() {
 		t.Fatalf("prior-split pipeline ID = %s, want preserved %s", storedPriorSplitID, priorSplitID)
 	}
-	if err := database.Reader().QueryRowContext(ctx, `SELECT definition FROM pipeline_versions
-		WHERE pipeline_kind = 'dialogue' AND version_key = ?`, domain.DialoguePipelineVersionV3).Scan(&currentDefinition); err != nil {
+	var storedPriorBoundedID, storedPriorBoundedDefinition string
+	if err := database.Reader().QueryRowContext(ctx, `SELECT pipeline_version_id, definition FROM pipeline_versions
+	 WHERE pipeline_kind = 'dialogue' AND version_key = ?`, domain.DialoguePipelineVersionV3).Scan(&storedPriorBoundedID, &storedPriorBoundedDefinition); err != nil {
 		t.Fatal(err)
 	}
-	expectedCurrent, err := domain.DialoguePipelineDefinition(legacyID, domain.DialoguePipelineVersionV3)
+	if storedPriorBoundedID != priorBoundedID.String() || storedPriorBoundedDefinition != priorBounded.Definition.String() {
+		t.Fatal("startup changed the stored v3 pipeline")
+	}
+	if err := database.Reader().QueryRowContext(ctx, `SELECT definition FROM pipeline_versions
+		WHERE pipeline_kind = 'dialogue' AND version_key = ?`, domain.DialoguePipelineVersionV4).Scan(&currentDefinition); err != nil {
+		t.Fatal(err)
+	}
+	expectedCurrent, err := domain.DialoguePipelineDefinition(legacyID, domain.DialoguePipelineVersionV4)
 	if err != nil {
 		t.Fatal(err)
 	}
 	if currentDefinition != expectedCurrent.Definition.String() {
-		t.Fatalf("dialogue-v3 definition = %s, want exact %s", currentDefinition, expectedCurrent.Definition.String())
+		t.Fatalf("dialogue-v4 definition = %s, want exact %s", currentDefinition, expectedCurrent.Definition.String())
 	}
 }
 
-func TestCOV56StartupRegistrationRejectsConflictingDialogueV3(t *testing.T) {
+func TestCOV56StartupRegistrationRejectsConflictingDialogueV4(t *testing.T) {
 	ctx := context.Background()
 	path := filepath.Join(t.TempDir(), "startup-conflict.db")
 	database, err := store.Open(ctx, path)
@@ -151,7 +167,7 @@ func TestCOV56StartupRegistrationRejectsConflictingDialogueV3(t *testing.T) {
 	conflicting, err := canonical.MarshalCanonical(struct {
 		Purpose string `json:"purpose"`
 		Version string `json:"version"`
-	}{Purpose: "dialogue", Version: "dialogue-v3-conflict"})
+	}{Purpose: "dialogue", Version: "dialogue-v4-conflict"})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -167,7 +183,7 @@ func TestCOV56StartupRegistrationRejectsConflictingDialogueV3(t *testing.T) {
 		pipeline_version_id, canonical_commit_id, pipeline_kind, version_key,
 		definition, recorded_at, recorded_tz
 	) VALUES (?, ?, 'dialogue', ?, ?, ?, ?)`, conflictingID.String(), commitID,
-		domain.DialoguePipelineVersionV3, conflicting.String(), recordedAt, recordedTZ); err != nil {
+		domain.DialoguePipelineVersionV4, conflicting.String(), recordedAt, recordedTZ); err != nil {
 		_ = raw.Close()
 		t.Fatal(err)
 	}
@@ -187,8 +203,8 @@ func TestCOV56StartupRegistrationRejectsConflictingDialogueV3(t *testing.T) {
 			t.Error(err)
 		}
 	}()
-	if err := registerDialogueV3(ctx, writer, ids); err == nil {
-		t.Fatal("startup accepted a conflicting dialogue-v3 definition")
+	if err := registerDialogueV4(ctx, writer, ids); err == nil {
+		t.Fatal("startup accepted a conflicting dialogue-v4 definition")
 	}
 
 	var commits int
@@ -197,7 +213,7 @@ func TestCOV56StartupRegistrationRejectsConflictingDialogueV3(t *testing.T) {
 		t.Fatal(err)
 	}
 	if err := database.Reader().QueryRowContext(ctx, `SELECT definition FROM pipeline_versions
-		WHERE pipeline_kind = 'dialogue' AND version_key = ?`, domain.DialoguePipelineVersionV3).Scan(&storedDefinition); err != nil {
+		WHERE pipeline_kind = 'dialogue' AND version_key = ?`, domain.DialoguePipelineVersionV4).Scan(&storedDefinition); err != nil {
 		t.Fatal(err)
 	}
 	if commits != 1 || storedDefinition != conflicting.String() {

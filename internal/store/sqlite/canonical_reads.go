@@ -36,10 +36,10 @@ func (r *CanonicalRepository) BootstrapSnapshot(ctx context.Context) (domain.Boo
 	state.OwnerPrincipalID = ownerID
 	if err := scanSingleID(r.store.reader.QueryRowContext(ctx, `SELECT pipeline_version_id
 		FROM pipeline_versions
-		WHERE pipeline_kind = 'dialogue' AND version_key IN (?, ?, ?)
-		ORDER BY CASE version_key WHEN ? THEN 0 WHEN ? THEN 1 ELSE 2 END LIMIT 1`,
-		domain.DialoguePipelineVersionV3, domain.DialoguePipelineVersionV2, domain.DialoguePipelineVersionV1,
-		domain.DialoguePipelineVersionV3, domain.DialoguePipelineVersionV2,
+		WHERE pipeline_kind = 'dialogue' AND version_key IN (?, ?, ?, ?)
+		ORDER BY CASE version_key WHEN ? THEN 0 WHEN ? THEN 1 WHEN ? THEN 2 ELSE 3 END LIMIT 1`,
+		domain.DialoguePipelineVersionV4, domain.DialoguePipelineVersionV3, domain.DialoguePipelineVersionV2, domain.DialoguePipelineVersionV1,
+		domain.DialoguePipelineVersionV4, domain.DialoguePipelineVersionV3, domain.DialoguePipelineVersionV2,
 	), &state.PipelineVersionID); err != nil {
 		return domain.BootstrapState{}, fmt.Errorf("sqlite: bootstrap dialogue pipeline: %w", err)
 	}
@@ -134,10 +134,10 @@ func (r *CanonicalRepository) resident(ctx context.Context, residentID canonical
 	}
 	if err := scanSingleID(r.store.reader.QueryRowContext(ctx, `SELECT pipeline_version_id
 		FROM pipeline_versions
-		WHERE pipeline_kind = 'dialogue' AND version_key IN (?, ?, ?)
-		ORDER BY CASE version_key WHEN ? THEN 0 WHEN ? THEN 1 ELSE 2 END LIMIT 1`,
-		domain.DialoguePipelineVersionV3, domain.DialoguePipelineVersionV2, domain.DialoguePipelineVersionV1,
-		domain.DialoguePipelineVersionV3, domain.DialoguePipelineVersionV2,
+		WHERE pipeline_kind = 'dialogue' AND version_key IN (?, ?, ?, ?)
+		ORDER BY CASE version_key WHEN ? THEN 0 WHEN ? THEN 1 WHEN ? THEN 2 ELSE 3 END LIMIT 1`,
+		domain.DialoguePipelineVersionV4, domain.DialoguePipelineVersionV3, domain.DialoguePipelineVersionV2, domain.DialoguePipelineVersionV1,
+		domain.DialoguePipelineVersionV4, domain.DialoguePipelineVersionV3, domain.DialoguePipelineVersionV2,
 	), &snapshot.PipelineVersionID); err != nil {
 		return domain.ResidentSnapshot{}, err
 	}

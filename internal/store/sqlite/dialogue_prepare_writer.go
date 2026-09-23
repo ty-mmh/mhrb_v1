@@ -53,8 +53,8 @@ func (u *canonicalUoW) PrepareDialogue(
 		var resolution domain.PrepareDialogueResolution
 		switch executionClass {
 		case domain.DialogueExecutionCurrentNormal:
-			resolution = domain.PrepareDialogueExistingCurrentV3
-		case domain.DialogueExecutionLegacyNormal, domain.DialogueExecutionPriorSplitNormal:
+			resolution = domain.PrepareDialogueExistingCurrentV4
+		case domain.DialogueExecutionLegacyNormal, domain.DialogueExecutionPriorSplitNormal, domain.DialogueExecutionPriorBoundedNormal:
 			resolution = domain.PrepareDialogueDispatchExistingFrozenRun
 		default:
 			return domain.PrepareDialogueResult{}, fmt.Errorf(
@@ -87,7 +87,7 @@ func (u *canonicalUoW) PrepareDialogue(
 		if err := u.insertDialogueRecallForContext(
 			ctx,
 			*value.Recall,
-			domain.DialogueContextPolicyVersionV3,
+			domain.DialogueContextPolicyVersionV4,
 		); err != nil {
 			return domain.PrepareDialogueResult{}, err
 		}
@@ -122,7 +122,7 @@ func (u *canonicalUoW) PrepareDialogue(
 		return domain.PrepareDialogueResult{}, err
 	}
 	return domain.PrepareDialogueResult{
-		RunID: generation.RunID, Resolution: domain.PrepareDialoguePreparedCurrentV3,
+		RunID: generation.RunID, Resolution: domain.PrepareDialoguePreparedCurrentV4,
 	}, nil
 }
 
@@ -159,7 +159,7 @@ func (u *canonicalUoW) insertCurrentDialogueGenerationRun(
 		return err
 	}
 	if err := domain.ValidateNewDialogueNormalExecutionContract(domain.DialogueExecutionContract{
-		PipelineVersionKey:     domain.DialoguePipelineVersionV3,
+		PipelineVersionKey:     domain.DialoguePipelineVersionV4,
 		PromptTemplateVersion:  value.PromptTemplateVersion,
 		ContextPolicyVersion:   value.ContextPolicyVersion,
 		MemoryRenderingVersion: value.MemoryRenderingVersion,
@@ -302,7 +302,7 @@ func (u *canonicalUoW) validateExistingPreparedDialogue(
 	policy, err := u.loadPreparedDialogueMemoryPolicy(ctx, residentID, memoryID)
 	if err != nil || (contractClass == domain.DialogueExecutionPriorSplitNormal &&
 		policy.MemoryRecallEnabled && policy.RenderingVersion != memory.RenderingVersionV1) ||
-		(contractClass == domain.DialogueExecutionCurrentNormal &&
+		((contractClass == domain.DialogueExecutionCurrentNormal || contractClass == domain.DialogueExecutionPriorBoundedNormal) &&
 			policy.MemoryRecallEnabled && policy.RenderingVersion != memory.RenderingVersionV2) {
 		return fmt.Errorf("%w: existing memory policy is invalid: %v", errInvalidPreparedDialogueHistory, err)
 	}
@@ -364,8 +364,8 @@ func validPreparedDialogueSourceCommitOrder(
 	case domain.DialogueExecutionLegacyNormal:
 		// dialogue-v1 was the historical atomic ingress+prepare path.
 		return sourceCommitSeq == runCommitSeq
-	case domain.DialogueExecutionPriorSplitNormal, domain.DialogueExecutionCurrentNormal:
-		// dialogue-v2 and dialogue-v3 are both Commit A -> Commit B paths.
+	case domain.DialogueExecutionPriorSplitNormal, domain.DialogueExecutionPriorBoundedNormal, domain.DialogueExecutionCurrentNormal:
+		// dialogue-v2 and later use Commit A -> Commit B.
 		return sourceCommitSeq < runCommitSeq
 	default:
 		return false
@@ -894,10 +894,10 @@ func (u *canonicalUoW) validatePreparedDialogueAssembly(
 	}
 	if generation.BudgetExceeded != budgetExceeded ||
 		!bytes.Equal(generation.DroppedInputSummary.Bytes(), dropped.Bytes()) {
-		return errors.New("sqlite: prepared dialogue budget or dropped-input provenance differs from recomputed context-v3")
+		return errors.New("sqlite: prepared dialogue budget or dropped-input provenance differs from recomputed context-v4")
 	}
 	if len(generation.Inputs) != len(final) {
-		return errors.New("sqlite: prepared dialogue input count differs from recomputed context-v3")
+		return errors.New("sqlite: prepared dialogue input count differs from recomputed context-v4")
 	}
 	var total int64
 	for index, expected := range final {
@@ -906,7 +906,7 @@ func (u *canonicalUoW) validatePreparedDialogueAssembly(
 			actual.InclusionMode != expected.inclusionMode ||
 			!equalPreparedDialogueSource(actual.SourceID, expected.sourceID) ||
 			!bytes.Equal(actual.Content.Bytes, expected.content) {
-			return fmt.Errorf("sqlite: prepared dialogue input %d differs from recomputed context-v3", index)
+			return fmt.Errorf("sqlite: prepared dialogue input %d differs from recomputed context-v4", index)
 		}
 		if int64(len(actual.Content.Bytes)) > math.MaxInt64-total {
 			return errors.New("sqlite: prepared dialogue input byte total overflows")
@@ -1082,8 +1082,8 @@ func (u *canonicalUoW) validateCurrentDialoguePipeline(
 	}); err != nil {
 		return err
 	}
-	if kind != "dialogue" || versionKey != domain.DialoguePipelineVersionV3 {
-		return errors.New("sqlite: new prepared dialogue requires the exact dialogue-v3 pipeline row")
+	if kind != "dialogue" || versionKey != domain.DialoguePipelineVersionV4 {
+		return errors.New("sqlite: new prepared dialogue requires the exact dialogue-v4 pipeline row")
 	}
 	return nil
 }
@@ -1649,7 +1649,7 @@ func validatePreparedDialogueRecallPlanWithDrops(
 			_, dropped := droppedRecall[claimID]
 			_, included := finalSet[claimID]
 			if dropped == included {
-				return errors.New("sqlite: prepared dialogue Recall budget exclusions differ from recomputed context-v3")
+				return errors.New("sqlite: prepared dialogue Recall budget exclusions differ from recomputed context-v4")
 			}
 			if dropped {
 				knownDropped[claimID] = struct{}{}
@@ -1707,13 +1707,13 @@ func validatePreparedDialogueRecallPlanWithDrops(
 		return errors.New("sqlite: prepared dialogue final Recall input order differs from recomputed prompt plan")
 	}
 	if len(value.Recall.Usages) != len(expected) {
-		return errors.New("sqlite: prepared dialogue Recall usage count differs from recomputed context-v3 plan")
+		return errors.New("sqlite: prepared dialogue Recall usage count differs from recomputed context-v4 plan")
 	}
 	for index, actual := range value.Recall.Usages {
 		want := expected[index]
 		if actual.ClaimID != want.claimID || actual.Type != want.kind || actual.Ordinal != want.ordinal ||
 			actual.ExclusionReason != want.exclusion {
-			return fmt.Errorf("sqlite: prepared dialogue Recall usage %d differs from recomputed context-v3 plan", index)
+			return fmt.Errorf("sqlite: prepared dialogue Recall usage %d differs from recomputed context-v4 plan", index)
 		}
 	}
 	return nil

@@ -38,7 +38,7 @@ func (a *Application) BootstrapInit(ctx context.Context, input BootstrapInput) (
 		pipeline, err := canonical.MarshalCanonical(struct {
 			Version string `json:"version"`
 			Purpose string `json:"purpose"`
-		}{Version: domain.DialoguePipelineVersionV3, Purpose: "dialogue"})
+		}{Version: domain.DialoguePipelineVersionV4, Purpose: "dialogue"})
 		if err != nil {
 			return domain.BootstrapState{}, err
 		}

@@ -62,7 +62,8 @@ func (recall DialogueRecall) Validate() error {
 func (recall DialogueRecall) ValidateForContext(contextPolicyVersion string) error {
 	if contextPolicyVersion != DialogueContextPolicyVersionV1 &&
 		contextPolicyVersion != DialogueContextPolicyVersionV2 &&
-		contextPolicyVersion != DialogueContextPolicyVersionV3 {
+		contextPolicyVersion != DialogueContextPolicyVersionV3 &&
+		contextPolicyVersion != DialogueContextPolicyVersionV4 {
 		return fmt.Errorf("domain: unsupported dialogue context policy version %q", contextPolicyVersion)
 	}
 	for _, id := range []canonical.ID{
@@ -118,7 +119,8 @@ func (recall DialogueRecall) ValidateForContext(contextPolicyVersion string) err
 		if usage.ExclusionReason != "" {
 			var err error
 			if contextPolicyVersion == DialogueContextPolicyVersionV2 ||
-				contextPolicyVersion == DialogueContextPolicyVersionV3 {
+				contextPolicyVersion == DialogueContextPolicyVersionV3 ||
+				contextPolicyVersion == DialogueContextPolicyVersionV4 {
 				err = usage.ExclusionReason.ValidateV2()
 			} else {
 				err = usage.ExclusionReason.ValidateV1()

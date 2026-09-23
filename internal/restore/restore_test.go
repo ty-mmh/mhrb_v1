@@ -99,14 +99,14 @@ func TestM7RestoreValidBundlePublishesClosedDirectory(t *testing.T) {
 	}
 	var pipelineCount int
 	if err := restoredStore.Reader().QueryRow(`SELECT COUNT(*) FROM pipeline_versions
-		WHERE pipeline_kind = 'dialogue' AND version_key = ?`, domain.DialoguePipelineVersionV3).Scan(&pipelineCount); err != nil {
+		WHERE pipeline_kind = 'dialogue' AND version_key = ?`, domain.DialoguePipelineVersionV4).Scan(&pipelineCount); err != nil {
 		_ = restoredStore.Close()
 		t.Fatal(err)
 	}
 	var pipelineRaw, registrationCommitRaw, definitionRaw string
 	if err := restoredStore.Reader().QueryRow(`SELECT pipeline_version_id, canonical_commit_id, definition
 		FROM pipeline_versions WHERE pipeline_kind = 'dialogue' AND version_key = ?`,
-		domain.DialoguePipelineVersionV3).Scan(&pipelineRaw, &registrationCommitRaw, &definitionRaw); err != nil {
+		domain.DialoguePipelineVersionV4).Scan(&pipelineRaw, &registrationCommitRaw, &definitionRaw); err != nil {
 		_ = restoredStore.Close()
 		t.Fatal(err)
 	}
@@ -121,10 +121,10 @@ func TestM7RestoreValidBundlePublishesClosedDirectory(t *testing.T) {
 		t.Fatal(err)
 	}
 	if pipelineCount != 1 || domain.ValidateExactDialoguePipelineDefinition(domain.PipelineVersionDefinition{
-		ID: pipelineID, Kind: "dialogue", VersionKey: domain.DialoguePipelineVersionV3, Definition: definition,
+		ID: pipelineID, Kind: "dialogue", VersionKey: domain.DialoguePipelineVersionV4, Definition: definition,
 	}) != nil {
 		_ = restoredStore.Close()
-		t.Fatalf("restored dialogue-v3 registration count/definition = %d / %s", pipelineCount, definitionRaw)
+		t.Fatalf("restored dialogue-v4 registration count/definition = %d / %s", pipelineCount, definitionRaw)
 	}
 	registrationCommitID, err := canonical.ParseID(registrationCommitRaw)
 	if err != nil {
@@ -139,7 +139,7 @@ func TestM7RestoreValidBundlePublishesClosedDirectory(t *testing.T) {
 	}
 	if !registrationEffectReported {
 		_ = restoredStore.Close()
-		t.Fatalf("restore result omitted dialogue-v3 registration commit %s: %+v",
+		t.Fatalf("restore result omitted dialogue-v4 registration commit %s: %+v",
 			registrationCommitID, result.CanonicalCommits)
 	}
 	if err := restoredStore.Close(); err != nil {
@@ -474,7 +474,7 @@ func TestCOV56RegisterRestoredDialogueV3IsExactAndIdempotent(t *testing.T) {
 		_ = store.Close()
 		t.Fatal(err)
 	}
-	first, err := registerRestoredDialogueV3(ctx, writer, ids)
+	first, err := registerRestoredDialogueV4(ctx, writer, ids)
 	if err != nil {
 		_ = writer.Close(ctx)
 		_ = store.Close()
@@ -483,7 +483,7 @@ func TestCOV56RegisterRestoredDialogueV3IsExactAndIdempotent(t *testing.T) {
 	if first.Commit.CommitID.IsZero() {
 		_ = writer.Close(ctx)
 		_ = store.Close()
-		t.Fatal("first restored dialogue-v3 registration created no Canonical commit")
+		t.Fatal("first restored dialogue-v4 registration created no Canonical commit")
 	}
 	var commits []Commit
 	appendRestoreCommit(&commits, Commit{
@@ -501,7 +501,7 @@ func TestCOV56RegisterRestoredDialogueV3IsExactAndIdempotent(t *testing.T) {
 		_ = store.Close()
 		t.Fatal(err)
 	}
-	second, err := registerRestoredDialogueV3(ctx, writer, ids)
+	second, err := registerRestoredDialogueV4(ctx, writer, ids)
 	if err != nil {
 		_ = writer.Close(ctx)
 		_ = store.Close()
@@ -523,14 +523,14 @@ func TestCOV56RegisterRestoredDialogueV3IsExactAndIdempotent(t *testing.T) {
 	var pipelineRaw, commitRaw, definitionRaw string
 	var count int
 	if err := store.Reader().QueryRow(`SELECT COUNT(*) FROM pipeline_versions
-		WHERE pipeline_kind = 'dialogue' AND version_key = ?`, domain.DialoguePipelineVersionV3).Scan(&count); err != nil {
+		WHERE pipeline_kind = 'dialogue' AND version_key = ?`, domain.DialoguePipelineVersionV4).Scan(&count); err != nil {
 		_ = writer.Close(ctx)
 		_ = store.Close()
 		t.Fatal(err)
 	}
 	if err := store.Reader().QueryRow(`SELECT pipeline_version_id, canonical_commit_id, definition
 		FROM pipeline_versions WHERE pipeline_kind = 'dialogue' AND version_key = ?`,
-		domain.DialoguePipelineVersionV3).Scan(&pipelineRaw, &commitRaw, &definitionRaw); err != nil {
+		domain.DialoguePipelineVersionV4).Scan(&pipelineRaw, &commitRaw, &definitionRaw); err != nil {
 		_ = writer.Close(ctx)
 		_ = store.Close()
 		t.Fatal(err)
@@ -550,7 +550,7 @@ func TestCOV56RegisterRestoredDialogueV3IsExactAndIdempotent(t *testing.T) {
 	if count != 1 || commitRaw != first.Commit.CommitID.String() {
 		_ = writer.Close(ctx)
 		_ = store.Close()
-		t.Fatalf("restored dialogue-v3 row count/commit = %d/%s, want 1/%s",
+		t.Fatalf("restored dialogue-v4 row count/commit = %d/%s, want 1/%s",
 			count, commitRaw, first.Commit.CommitID)
 	}
 	for version, wantID := range map[string]canonical.ID{
@@ -571,7 +571,7 @@ func TestCOV56RegisterRestoredDialogueV3IsExactAndIdempotent(t *testing.T) {
 		}
 	}
 	if err := domain.ValidateExactDialoguePipelineDefinition(domain.PipelineVersionDefinition{
-		ID: pipelineID, Kind: "dialogue", VersionKey: domain.DialoguePipelineVersionV3, Definition: definition,
+		ID: pipelineID, Kind: "dialogue", VersionKey: domain.DialoguePipelineVersionV4, Definition: definition,
 	}); err != nil {
 		_ = writer.Close(ctx)
 		_ = store.Close()

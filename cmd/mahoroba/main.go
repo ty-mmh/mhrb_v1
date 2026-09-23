@@ -324,7 +324,7 @@ func openRuntimeWithOperationalObserver(
 		return nil, err
 	}
 	if initialized {
-		if err := registerDialogueV3(ctx, writer, ids); err != nil {
+		if err := registerDialogueV4(ctx, writer, ids); err != nil {
 			_ = writer.Close(context.Background())
 			cleanup()
 			return nil, fmt.Errorf("runtime register current dialogue pipeline: %w", err)
@@ -492,12 +492,12 @@ func requireResidentExists(ctx context.Context, repository residentExistenceRead
 	return nil
 }
 
-func registerDialogueV3(ctx context.Context, writer *canonical.Writer, ids *canonical.IDGenerator) error {
+func registerDialogueV4(ctx context.Context, writer *canonical.Writer, ids *canonical.IDGenerator) error {
 	pipelineID, err := ids.New()
 	if err != nil {
-		return fmt.Errorf("allocate dialogue-v3 pipeline ID: %w", err)
+		return fmt.Errorf("allocate dialogue-v4 pipeline ID: %w", err)
 	}
-	definition, err := domain.DialoguePipelineDefinition(pipelineID, domain.DialoguePipelineVersionV3)
+	definition, err := domain.DialoguePipelineDefinition(pipelineID, domain.DialoguePipelineVersionV4)
 	if err != nil {
 		return err
 	}

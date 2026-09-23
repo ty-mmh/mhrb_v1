@@ -99,8 +99,8 @@ func TestCOV1PrepareDialogueCommandBindsAssemblyTargetAndCurrentTuple(t *testing
 func TestCOVR04PrepareDialogueResultRequiresTypedResolution(t *testing.T) {
 	runID := validPrepareDialogue(t).Generation.RunID
 	for _, resolution := range []PrepareDialogueResolution{
-		PrepareDialoguePreparedCurrentV3,
-		PrepareDialogueExistingCurrentV3,
+		PrepareDialoguePreparedCurrentV4,
+		PrepareDialogueExistingCurrentV4,
 		PrepareDialogueDispatchExistingFrozenRun,
 	} {
 		t.Run(string(resolution), func(t *testing.T) {
@@ -118,7 +118,7 @@ func TestCOVR04PrepareDialogueResultRequiresTypedResolution(t *testing.T) {
 		})
 	}
 
-	if err := (PrepareDialogueResult{Resolution: PrepareDialoguePreparedCurrentV3}).Validate(); err == nil {
+	if err := (PrepareDialogueResult{Resolution: PrepareDialoguePreparedCurrentV4}).Validate(); err == nil {
 		t.Fatal("PrepareDialogue result without a run ID was accepted")
 	}
 }
@@ -193,7 +193,7 @@ func validPrepareDialogue(t *testing.T) PrepareDialogue {
 			RunID: runID, ResidentID: residentID, Purpose: GenerationPurposeDialogue,
 			IdempotencyKey: DialogueObligation(eventID), Provider: "test", Model: "model",
 			PromptTemplateVersion:  DialoguePromptTemplateVersionV1,
-			ContextPolicyVersion:   DialogueContextPolicyVersionV3,
+			ContextPolicyVersion:   DialogueContextPolicyVersionV4,
 			MemoryRenderingVersion: MemoryRenderingVersionV2,
 			PipelineVersionID:      pipelineID,
 			SessionPolicyID:        &sessionID,

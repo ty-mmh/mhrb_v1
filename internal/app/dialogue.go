@@ -269,7 +269,7 @@ func (a *Application) cancelDialogueWorkWithObserver(
 		IdempotencyKey: domain.DialogueObligation(work.UserEvent.ID),
 		Provider:       a.provider, Model: a.model,
 		PromptTemplateVersion:  domain.DialoguePromptTemplateVersionV1,
-		ContextPolicyVersion:   domain.DialogueContextPolicyVersionV3,
+		ContextPolicyVersion:   domain.DialogueContextPolicyVersionV4,
 		MemoryRenderingVersion: domain.MemoryRenderingVersionV2,
 		PipelineVersionID:      resident.PipelineVersionID,
 		SessionPolicyID:        &resident.SessionPolicyID, PrinciplesRevisionID: resident.PrinciplesRevisionID,
@@ -562,8 +562,8 @@ func (a *Application) preparePendingDialogue(
 			return domain.PreparedGeneration{}, err
 		}
 		switch committed.Resolution {
-		case domain.PrepareDialoguePreparedCurrentV3,
-			domain.PrepareDialogueExistingCurrentV3,
+		case domain.PrepareDialoguePreparedCurrentV4,
+			domain.PrepareDialogueExistingCurrentV4,
 			domain.PrepareDialogueDispatchExistingFrozenRun:
 			// The writer has already classified the idempotency key and, for
 			// an existing run, revalidated the frozen envelope atomically. The

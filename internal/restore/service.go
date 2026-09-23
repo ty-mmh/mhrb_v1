@@ -443,7 +443,7 @@ func runStagedDatabase(
 			resultErr = errors.Join(resultErr, writer.Close(context.Background()))
 		}
 	}()
-	registration, err := registerRestoredDialogueV3(ctx, writer, ids)
+	registration, err := registerRestoredDialogueV4(ctx, writer, ids)
 	if err != nil {
 		return result, fmt.Errorf("restore: register current dialogue pipeline: %w", err)
 	}
@@ -582,7 +582,7 @@ func verifyClosedStagingRoot(root *fssecure.Directory) error {
 	return nil
 }
 
-func registerRestoredDialogueV3(
+func registerRestoredDialogueV4(
 	ctx context.Context,
 	writer *canonical.Writer,
 	ids *canonical.IDGenerator,
@@ -591,7 +591,7 @@ func registerRestoredDialogueV3(
 	if err != nil {
 		return canonical.CommandResult{}, err
 	}
-	definition, err := domain.DialoguePipelineDefinition(pipelineID, domain.DialoguePipelineVersionV3)
+	definition, err := domain.DialoguePipelineDefinition(pipelineID, domain.DialoguePipelineVersionV4)
 	if err != nil {
 		return canonical.CommandResult{}, err
 	}

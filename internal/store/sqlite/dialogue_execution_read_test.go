@@ -17,6 +17,7 @@ func TestCOV56GenerationReadKeepsAllNormalDialogueCompatibility(t *testing.T) {
 
 	legacyPipelineID := mustParseSnapshotID(fixture.ids.new())
 	priorSplitPipelineID := mustParseSnapshotID(fixture.ids.new())
+	priorBoundedPipelineID := mustParseSnapshotID(fixture.ids.new())
 	currentPipelineID := mustParseSnapshotID(fixture.ids.new())
 	for _, pipeline := range []struct {
 		id      canonical.ID
@@ -24,7 +25,8 @@ func TestCOV56GenerationReadKeepsAllNormalDialogueCompatibility(t *testing.T) {
 	}{
 		{id: legacyPipelineID, version: domain.DialoguePipelineVersionV1},
 		{id: priorSplitPipelineID, version: domain.DialoguePipelineVersionV2},
-		{id: currentPipelineID, version: domain.DialoguePipelineVersionV3},
+		{id: priorBoundedPipelineID, version: domain.DialoguePipelineVersionV3},
+		{id: currentPipelineID, version: domain.DialoguePipelineVersionV4},
 	} {
 		definition, err := domain.DialoguePipelineDefinition(pipeline.id, pipeline.version)
 		if err != nil {
@@ -65,6 +67,10 @@ func TestCOV56GenerationReadKeepsAllNormalDialogueCompatibility(t *testing.T) {
 		{
 			name: "prior-split normal", pipelineID: priorSplitPipelineID,
 			contract: domain.PriorSplitDialogueNormalExecutionContract(),
+		},
+		{
+			name: "prior bounded normal", pipelineID: priorBoundedPipelineID,
+			contract: domain.PriorBoundedDialogueNormalExecutionContract(),
 		},
 		{
 			name: "current normal", pipelineID: currentPipelineID,

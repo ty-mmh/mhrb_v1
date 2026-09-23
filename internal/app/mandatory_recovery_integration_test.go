@@ -40,14 +40,14 @@ func TestM7RecoveryRunlessDialogueAndMemoryUseFrozenInternalEnvelopeWithoutProvi
 		"dialogue", "source_content_erased", activation.RevisionID)
 	var currentPipelineRaw string
 	if err := fixture.store.Reader().QueryRow(`SELECT pipeline_version_id FROM pipeline_versions
-		WHERE pipeline_kind = 'dialogue' AND version_key = ?`, domain.DialoguePipelineVersionV3).Scan(&currentPipelineRaw); err != nil {
+		WHERE pipeline_kind = 'dialogue' AND version_key = ?`, domain.DialoguePipelineVersionV4).Scan(&currentPipelineRaw); err != nil {
 		t.Fatal(err)
 	}
 	currentPipelineID, err := canonical.ParseID(currentPipelineRaw)
 	if err != nil {
 		t.Fatal(err)
 	}
-	assertCOV2SyntheticDialogueContract(t, fixture, dialogueRun, currentPipelineID, domain.DialoguePipelineVersionV3)
+	assertCOV2SyntheticDialogueContract(t, fixture, dialogueRun, currentPipelineID, domain.DialoguePipelineVersionV4)
 	memoryRun := assertSyntheticRecoveryRun(t, fixture, domain.MemoryExtractionObligation(event.ID),
 		"memory_extraction", "source_content_erased", activation.RevisionID)
 	if dialogueRun == memoryRun {

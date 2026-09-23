@@ -137,7 +137,7 @@ func (r *CanonicalRepository) AssembleDialogue(
 		RunID: request.RunID, ResidentID: request.ResidentID, Purpose: domain.GenerationPurposeDialogue,
 		IdempotencyKey: domain.DialogueObligation(current.ID), Provider: request.Provider, Model: request.Model,
 		PromptTemplateVersion:  domain.DialoguePromptTemplateVersionV1,
-		ContextPolicyVersion:   domain.DialogueContextPolicyVersionV3,
+		ContextPolicyVersion:   domain.DialogueContextPolicyVersionV4,
 		MemoryRenderingVersion: domain.MemoryRenderingVersionV2,
 		PipelineVersionID:      snapshot.pipelineID, SessionPolicyID: &snapshot.sessionID,
 		PrinciplesRevisionID: snapshot.principlesID, PersonaRevisionID: snapshot.personaID,
@@ -202,7 +202,7 @@ func (u *canonicalUoW) loadDialogueSnapshotAt(
 		JOIN canonical_commits commit_row ON commit_row.canonical_commit_id = pipeline.canonical_commit_id
 		WHERE pipeline.pipeline_kind = 'dialogue' AND pipeline.version_key = ?
 		  AND commit_row.commit_seq <= ? AND pipeline.recorded_at <= ?`,
-		domain.DialoguePipelineVersionV3, target.Head.CommitSeq.Int64(), target.AsOf.UnixMicro(),
+		domain.DialoguePipelineVersionV4, target.Head.CommitSeq.Int64(), target.AsOf.UnixMicro(),
 	).Scan(&pipelineRaw, &definitionRaw)
 	if err != nil {
 		return dialogueSnapshot{}, fmt.Errorf("sqlite: resolve target dialogue pipeline: %w", err)
@@ -216,7 +216,7 @@ func (u *canonicalUoW) loadDialogueSnapshotAt(
 		return dialogueSnapshot{}, err
 	}
 	if err := domain.ValidateExactDialoguePipelineDefinition(domain.PipelineVersionDefinition{
-		ID: parsedPipeline, Kind: "dialogue", VersionKey: domain.DialoguePipelineVersionV3, Definition: definition,
+		ID: parsedPipeline, Kind: "dialogue", VersionKey: domain.DialoguePipelineVersionV4, Definition: definition,
 	}); err != nil {
 		return dialogueSnapshot{}, err
 	}
@@ -399,11 +399,13 @@ func loadDialogueAssemblySource(
 	tx *sql.Tx,
 	request domain.DialogueAssemblyRequest,
 ) (domain.Event, []byte, error) {
-	var eventRaw, residentRaw, eventType, recordedTZ, contentRaw, erasure string
+	var eventRaw, residentRaw, eventType, recordedTZ, contentRaw, erasure, actorRaw string
+	var targetRaw sql.NullString
 	var seq, recordedAt, commitSeq int64
 	var content []byte
 	err := tx.QueryRowContext(ctx, `SELECT event.event_id, event.resident_id, event.seq, event.event_type,
 		event.recorded_at, event.recorded_tz, event.content_id, content.erasure_state, blob.content,
+		event.actor_principal_id, event.target_principal_id,
 		commit_row.commit_seq
 		FROM events event
 		JOIN canonical_commits commit_row ON commit_row.canonical_commit_id = event.canonical_commit_id
@@ -412,7 +414,7 @@ func loadDialogueAssemblySource(
 		 AND blob.hash_algorithm = content.blob_hash_algorithm AND blob.blob_hash = content.blob_hash
 		WHERE event.event_id = ? AND event.resident_id = ? AND commit_row.commit_seq <= ?`,
 		request.SourceEventID.String(), request.ResidentID.String(), request.Target.Head.CommitSeq.Int64(),
-	).Scan(&eventRaw, &residentRaw, &seq, &eventType, &recordedAt, &recordedTZ, &contentRaw, &erasure, &content, &commitSeq)
+	).Scan(&eventRaw, &residentRaw, &seq, &eventType, &recordedAt, &recordedTZ, &contentRaw, &erasure, &content, &actorRaw, &targetRaw, &commitSeq)
 	if err != nil {
 		return domain.Event{}, nil, fmt.Errorf("sqlite: load dialogue Assembly source: %w", err)
 	}
@@ -439,9 +441,22 @@ func loadDialogueAssemblySource(
 	if err != nil {
 		return domain.Event{}, nil, err
 	}
+	actorID, err := canonical.ParseID(actorRaw)
+	if err != nil {
+		return domain.Event{}, nil, err
+	}
+	var targetID *canonical.ID
+	if targetRaw.Valid {
+		parsed, err := canonical.ParseID(targetRaw.String)
+		if err != nil {
+			return domain.Event{}, nil, err
+		}
+		targetID = &parsed
+	}
 	_ = commitSeq // queried to bind the source to the same snapshot and target.
 	return domain.Event{
 		ID: eventID, ResidentID: residentID, Seq: parsedSeq, Type: eventType,
+		ActorPrincipalID: actorID, TargetPrincipalID: targetID,
 		RecordedAt: canonical.Instant(recordedAt), RecordedTZ: tz,
 		ContentID: contentID, Content: string(content),
 	}, append([]byte(nil), content...), nil
