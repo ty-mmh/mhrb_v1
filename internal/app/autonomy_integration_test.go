@@ -1711,7 +1711,7 @@ func TestM6InitiativeWriterRejectsLegacyMemoryPolicyV1(t *testing.T) {
 	_, err = fixture.application.submit(
 		ctx, domain.PrepareAutonomousGenerationCommand(prepare),
 	)
-	if err == nil || !strings.Contains(err.Error(), "memory-policy-v2, memory-policy-v3, or memory-policy-v4") {
+	if err == nil || !strings.Contains(err.Error(), "memory-policy-v2, memory-policy-v3, memory-policy-v4, or memory-policy-v5") {
 		t.Fatalf("legacy initiative Writer error = %v", err)
 	}
 	var runs int
