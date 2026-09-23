@@ -8,7 +8,7 @@
 | --- | --- |
 | `generation.base_url is required for serve` / `generation.model is required for serve` | [生成設定](configuration.md#生成サービスとapiキー)を埋め、使用中の設定ファイルを確認します。 |
 | active／selectedなResidentがない | Bootstrapの承認・finalizeまで完了し、**Select resident** でactiveなResidentを選びます。 |
-| `memory_policy_not_service_current` | 有効な旧v2／v3 policyはv4への移行が必要です。[記憶とself-talk](configuration.md#記憶とself-talk)を参照してください。初期v1の通常対話には移行不要です。 |
+| `memory_policy_not_service_current` | 有効な旧v2／v3 policyはv4またはv5への移行が必要です。今回のRecall改善にはv5を使います。[記憶とself-talk](configuration.md#記憶とself-talk)を参照してください。初期v1の通常対話には移行不要です。 |
 | データがbusy／locked、`Stop dialogue first` | 対話を停止し、**Stopped** まで待ちます。別ターミナルのサーバーが同じ保存先を使っていれば、そちらも起動元で終了します。 |
 | listen／bindでアドレス使用中 | 同じポートを使うプロセスがないか確認します。管理と対話の既定ポートは8788と8787です。 |
 | shutdown失敗・`restart_required` | 新しい対話を重ねて起動せず、管理サーバーを終了してから起動し直します。 |
@@ -26,7 +26,7 @@
 
 self-talkは内部処理で、対話画面に出ないのが通常です。有効化は[設定手順](configuration.md#記憶とself-talk)に従います。
 
-**Autonomy status** の抑止理由を確認してください。`disabled` は設定がOFF、`quiet_hours` は静穏時間、`minimum_interval` は待機時間、`no_trigger` は起点不足などを示します。v4適用後のユーザーメッセージ、選択中のResident、対話サーバーの稼働も必要です。`effective` だけでサーバーが動いているとは判断しないでください。
+**Autonomy status** の抑止理由を確認してください。`disabled` は設定がOFF、`quiet_hours` は静穏時間、`minimum_interval` は待機時間、`no_trigger` は起点不足などを示します。v4またはv5適用後のユーザーメッセージ、選択中のResident、対話サーバーの稼働も必要です。`effective` だけでサーバーが動いているとは判断しないでください。
 
 ## Tailscaleから開けない／送信時に403になる
 

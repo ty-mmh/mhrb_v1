@@ -51,10 +51,11 @@
       "source": "generated",
       "changes": [
         "distribution-documentation-or-packaging",
-        "agpl-license-declaration-and-packaging"
+        "agpl-license-declaration-and-packaging",
+        "operating-guidance-and-recall-continuity-documentation"
       ],
-      "bytes": 5023,
-      "sha256": "5d648acf009d9a63ba8c63bdd021e0a26cd63f38a2c22a89d9bb1d63f127ae72"
+      "bytes": 5182,
+      "sha256": "3d14f7d6b0ad0bc24b39993e354bdcc96ef13c0efe19c5bfbf3918e500e010ef"
     },
     {
       "path": "Dockerfile",
@@ -77,10 +78,11 @@
       "source": "generated",
       "changes": [
         "distribution-documentation-or-packaging",
-        "agpl-license-declaration-and-packaging"
+        "agpl-license-declaration-and-packaging",
+        "operating-guidance-and-recall-continuity-documentation"
       ],
-      "bytes": 4563,
-      "sha256": "d597efa5339d5c57be0e974cc7f5d39149d9fb95e4fe1e5d3b30544bce7a3f50"
+      "bytes": 6139,
+      "sha256": "9d1cc87bbeafcbc377fa8b3cd2b254ddab3e7e87c9d2a77539e9a3a44b495c0d"
     },
     {
       "path": "cmd/mahoroba-ci-windows-test-temp/main.go",
@@ -149,10 +151,11 @@
       "path": "cmd/mahoroba/admin_serve.go",
       "source": "cmd/mahoroba/admin_serve.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
-      "bytes": 21212,
-      "sha256": "0a37895b89bc76884c7e175275cdffa23790f2e56790955580581673a25160b0"
+      "bytes": 21669,
+      "sha256": "860e23acdb21e3a776d46cdfe2f2524135169069954c282678ceb5fea08696a0"
     },
     {
       "path": "cmd/mahoroba/admin_serve_test.go",
@@ -235,10 +238,11 @@
       "path": "cmd/mahoroba/cov_startup_registration_test.go",
       "source": "cmd/mahoroba/cov_startup_registration_test.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
-      "bytes": 7091,
-      "sha256": "1396a6cd34331c0f5aa72d8c268c94a5a3dfbbbfb1b8749d2b9f2a407ad7ed67"
+      "bytes": 7852,
+      "sha256": "141d4851ade8c70d7680e7c7e2ffbe31c054fa6f7ae81b65ff75611abe192bf5"
     },
     {
       "path": "cmd/mahoroba/dialogue_network.go",
@@ -339,10 +343,11 @@
       "path": "cmd/mahoroba/main.go",
       "source": "cmd/mahoroba/main.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
-      "bytes": 114730,
-      "sha256": "f2dbcbbe704da528781d988b69c2126946bc87e8feaa3091eb66768519879f6c"
+      "bytes": 115744,
+      "sha256": "70c6b9c88cd2bbe793a91d166bab84288995b7608937f92afd5a5d781c10ccff"
     },
     {
       "path": "cmd/mahoroba/main_test.go",
@@ -379,6 +384,15 @@
       ],
       "bytes": 16581,
       "sha256": "8485ba690b4b01883670eb53c01a67ed42483062ebf37c56a83ca0b70c478e1b"
+    },
+    {
+      "path": "cmd/mahoroba/memory_policy_v5_test.go",
+      "source": "generated",
+      "changes": [
+        "added-for-recall-and-dialogue-continuity"
+      ],
+      "bytes": 1025,
+      "sha256": "99daae891c2ac7bad3a61f2b5c0887b00b729c109e879b1094d313a1925601ec"
     },
     {
       "path": "cmd/mahoroba/projection_cli_test.go",
@@ -483,18 +497,21 @@
     {
       "path": "docs/guide/configuration.md",
       "source": "docs/guide/configuration.md",
-      "changes": [],
-      "bytes": 6010,
-      "sha256": "31370ee95a903a1646366acebd3c11b57e2dbe3aeb641454ea2734b4750499a6"
+      "changes": [
+        "operating-guidance-and-recall-continuity-documentation"
+      ],
+      "bytes": 8625,
+      "sha256": "786beea93eb82676992a38746d76cf5a69b628d74631618d8773ff978e9c2507"
     },
     {
       "path": "docs/guide/docker.md",
       "source": "docs/guide/docker.md",
       "changes": [
-        "distribution-scope"
+        "distribution-scope",
+        "operating-guidance-and-recall-continuity-documentation"
       ],
-      "bytes": 13169,
-      "sha256": "8470e788a78a95034be3bc2fd4b0c05677536d85fd59d6f959c22143675ba808"
+      "bytes": 13225,
+      "sha256": "36d9ea912bbb0e2368df29d4cc70a98fab8d6178d1a47b7896fa458cdd58f108"
     },
     {
       "path": "docs/guide/getting-started.md",
@@ -508,23 +525,23 @@
     {
       "path": "docs/guide/operations.md",
       "source": "docs/guide/operations.md",
-      "changes": [],
-      "bytes": 5251,
-      "sha256": "c25327bfea8e8bfc3b413b0de18db532f4244a6509c35c06be2c0b6797ecca9f"
+      "changes": "operating-guidance-and-recall-continuity-documentation",
+      "bytes": 7343,
+      "sha256": "f11382b87932eb75060e03809d8a28583a8fd2da080e4f56cc9df5f1b9215bbc"
     },
     {
       "path": "docs/guide/troubleshooting.md",
       "source": "docs/guide/troubleshooting.md",
-      "changes": [],
-      "bytes": 4791,
-      "sha256": "ce3441b77e51aa5e7c89d9ad9731cd445a22cc26e53a56cf0611027471eae2d7"
+      "changes": "operating-guidance-and-recall-continuity-documentation",
+      "bytes": 4860,
+      "sha256": "b43b0dea356acd7c094304cc38a414f3ecbdc3cdb169538d99e185ad1840f0f8"
     },
     {
       "path": "docs/guide/web-administration.md",
       "source": "docs/guide/web-administration.md",
-      "changes": [],
-      "bytes": 13260,
-      "sha256": "b7fa3be076b691fcd178db64ab784a75f0fe95cf659b3c1a6d386921df8223d5"
+      "changes": "operating-guidance-and-recall-continuity-documentation",
+      "bytes": 13891,
+      "sha256": "2fb1f6ef314c19ef17b5261a1cb5117dd077be0405e1304bea9a65a4f534cf96"
     },
     {
       "path": "docs/testing.md",
@@ -609,10 +626,11 @@
       "path": "internal/app/autonomy.go",
       "source": "internal/app/autonomy.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
-      "bytes": 35219,
-      "sha256": "b5816fb6d18713039e252ee55977eaa3fc7fdb2fb2c6b59cee8308c542ff0fbf"
+      "bytes": 35287,
+      "sha256": "ed5a1d0feee968e1871439e9fa1ff1082a8265adbf25061684efc512c536db98"
     },
     {
       "path": "internal/app/autonomy_disabled_parity_test.go",
@@ -627,10 +645,11 @@
       "path": "internal/app/autonomy_integration_test.go",
       "source": "internal/app/autonomy_integration_test.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
-      "bytes": 109243,
-      "sha256": "8491126bd78b8b10394e6cfabb348df3a11daa2d786bdf764ad5c7648cb12a94"
+      "bytes": 109261,
+      "sha256": "f0c450684d21074d7dba7aded2d5aacf1cb6fe0d911942651a1438fc1acfee1d"
     },
     {
       "path": "internal/app/background_failure.go",
@@ -645,10 +664,11 @@
       "path": "internal/app/bootstrap.go",
       "source": "internal/app/bootstrap.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
       "bytes": 16457,
-      "sha256": "3472eb703a44a70a26033d5e4af483594b75bc9a6f756cea013d52ff6e916a77"
+      "sha256": "54b90006af0d159251e27cdf4b10b4fe843befcac2ec586b62dcb4f9027ba121"
     },
     {
       "path": "internal/app/claim_landing_erasure_m7_test.go",
@@ -744,10 +764,11 @@
       "path": "internal/app/dialogue.go",
       "source": "internal/app/dialogue.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
       "bytes": 35965,
-      "sha256": "ec5ff39058d199473b6882a064ce9752f996d199419fdfb1bdf293b479c65cf1"
+      "sha256": "4bfb4e8b57f2c1bc145bac9bf4f2415bf08677a097593c263a1a9849d0d96ead"
     },
     {
       "path": "internal/app/discovery_test_helpers_test.go",
@@ -771,10 +792,11 @@
       "path": "internal/app/generation_envelope_integration_test.go",
       "source": "internal/app/generation_envelope_integration_test.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
       "bytes": 33538,
-      "sha256": "188819244fe857c984bd58e8863ebf973cc743c2b317ef4bc960c2d68f138d67"
+      "sha256": "8af470eb3a90bbf4b9b8f7fef6ff9748adb601954060c2a44b4da61267235fa9"
     },
     {
       "path": "internal/app/generation_versions.go",
@@ -789,19 +811,21 @@
       "path": "internal/app/ingress_metadata_integration_test.go",
       "source": "internal/app/ingress_metadata_integration_test.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
-      "bytes": 31372,
-      "sha256": "70965265303e9cbc74bb240b9fd12f1c916471164f21badd71fde233341260ad"
+      "bytes": 31425,
+      "sha256": "6300948bea34dfbe1af3beaf5fecc8a4d97d6143a9c475d18bf9f212b4cde4f1"
     },
     {
       "path": "internal/app/mandatory_recovery_integration_test.go",
       "source": "internal/app/mandatory_recovery_integration_test.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
       "bytes": 30857,
-      "sha256": "1ae89f9d0cbc9f5191417b1fc6d3b3ad1204202cb32f98b4be839b88d38003ee"
+      "sha256": "38cc1b09d38c7fe289167d87182046d3d4ad53fd3e6f7ac676e35dca5acea1bf"
     },
     {
       "path": "internal/app/mandatory_worker_observation.go",
@@ -825,10 +849,11 @@
       "path": "internal/app/memory_admin.go",
       "source": "internal/app/memory_admin.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
-      "bytes": 9295,
-      "sha256": "400fe892076d6c043864afea7f8f672082c1206ef642b947bb44893af26f6704"
+      "bytes": 10364,
+      "sha256": "876e2d1433591a4b47abc4a64ac86acdc2ef73f6291f40fda722f04f00f3a031"
     },
     {
       "path": "internal/app/memory_admin_mutations.go",
@@ -984,6 +1009,15 @@
       "sha256": "dd255c1e0b7c27fb068961768d5ee3fe18f4d7ddeacda276cfc5de75db5a4f27"
     },
     {
+      "path": "internal/app/memory_policy_v5_test.go",
+      "source": "generated",
+      "changes": [
+        "added-for-recall-and-dialogue-continuity"
+      ],
+      "bytes": 3522,
+      "sha256": "0bf517594a27ce6c3ad017e19faed2ead5ca35026865e6705ba8ba2d10cae0dd"
+    },
+    {
       "path": "internal/app/memory_queue_bounded_test.go",
       "source": "internal/app/memory_queue_bounded_test.go",
       "changes": [
@@ -1090,6 +1124,15 @@
       ],
       "bytes": 2482,
       "sha256": "6abebf99521d5acbf57d07ef1a1b30be773bc8716a6dc68902e3d009527b19f3"
+    },
+    {
+      "path": "internal/app/session_continuity_integration_test.go",
+      "source": "generated",
+      "changes": [
+        "added-for-recall-and-dialogue-continuity"
+      ],
+      "bytes": 5483,
+      "sha256": "f752c4e4abf8a91ebb45b23bef5a73393bf35cfad8237e7c7bbcee66826741dd"
     },
     {
       "path": "internal/app/tts_integration_test.go",
@@ -1226,9 +1269,11 @@
     {
       "path": "internal/autonomy/policy.go",
       "source": "internal/autonomy/policy.go",
-      "changes": [],
-      "bytes": 7006,
-      "sha256": "0075b6eeccde8da304b696710872570f924e09e7e33481d3062e55e15f482242"
+      "changes": [
+        "recall-and-dialogue-continuity-update"
+      ],
+      "bytes": 7050,
+      "sha256": "0dfba8b2d7bd638fcf2f5aa5dd76efc9a42d94d995c30d9b95834dda657c1864"
     },
     {
       "path": "internal/autonomy/policy_test.go",
@@ -1258,9 +1303,11 @@
     {
       "path": "internal/autonomy/scheduler.go",
       "source": "internal/autonomy/scheduler.go",
-      "changes": [],
-      "bytes": 6127,
-      "sha256": "fc4487ecc9fb11d7f52e71a07c17a7cd20010c3505770be0ec14a63fd5eb2fa1"
+      "changes": [
+        "recall-and-dialogue-continuity-update"
+      ],
+      "bytes": 6186,
+      "sha256": "c54435b49a842e730b8d8ae40b072b1c8ab5adba04d9944960259c7e99c2a103"
     },
     {
       "path": "internal/autonomy/scheduler_test.go",
@@ -1311,19 +1358,21 @@
       "path": "internal/backup/database_snapshot_linux.go",
       "source": "internal/backup/database_snapshot_linux.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "gofmt-only"
       ],
       "bytes": 2694,
-      "sha256": "237e628d56c3115d90c42a4b29cf976644c3c28648726fe87a97c24eb6111035"
+      "sha256": "d6f2611494965e1541770688b01e4860f0d25c339c935cacbb4923dcb2264664"
     },
     {
       "path": "internal/backup/database_snapshot_linux_test.go",
       "source": "internal/backup/database_snapshot_linux_test.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "gofmt-only"
       ],
       "bytes": 2275,
-      "sha256": "9c28b1cc3c7ce0abaab2a33ce2478fadb8fe0a59e0fa7d379954b1aea4cab37b"
+      "sha256": "e009f3e24eceb7a4085d23939559b88a7585ce0b677aef019893afc669f558f4"
     },
     {
       "path": "internal/backup/database_snapshot_windows.go",
@@ -1818,10 +1867,11 @@
       "path": "internal/domain/commands.go",
       "source": "internal/domain/commands.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
       "bytes": 13597,
-      "sha256": "ab234182e662d387115af60b03feb81ac3fc1ce9e24247c7343f040704d6c330"
+      "sha256": "a1c4cc9ee6e8981d633e04fa503e06b1ed0c1333bec04e3a838e974a4cdc7a79"
     },
     {
       "path": "internal/domain/covr05_architecture_test.go",
@@ -1861,37 +1911,41 @@
       "path": "internal/domain/dialogue_execution_contract.go",
       "source": "internal/domain/dialogue_execution_contract.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
-      "bytes": 8786,
-      "sha256": "4d67039c5637a7e6f0bb460e04ccfc437b536757672e8fe4b2073c14aa6eca05"
+      "bytes": 10178,
+      "sha256": "b87c2761bbc8e7f8da03ded23fa6e62a5aca0045b63c6a3c02abb5907f1b16e2"
     },
     {
       "path": "internal/domain/dialogue_execution_contract_test.go",
       "source": "internal/domain/dialogue_execution_contract_test.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
-      "bytes": 7425,
-      "sha256": "76d20f0229c636aed27560fc526f58be62405d81c36d3bbb2154320d17b174a3"
+      "bytes": 8028,
+      "sha256": "2e6c4e0d29393159f45c032679ef42e8a81e6a91b2d6b46f955204a162400a50"
     },
     {
       "path": "internal/domain/dialogue_prepare.go",
       "source": "internal/domain/dialogue_prepare.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
       "bytes": 21806,
-      "sha256": "a4bebb129237074ffa59c61c3016edbfcebc91ce60a2bacfb65a7935fc332f84"
+      "sha256": "0e52dd9121909e48bfb6713d958623f8c1eaa16f912f99f8d0d811a8240efe50"
     },
     {
       "path": "internal/domain/dialogue_prepare_test.go",
       "source": "internal/domain/dialogue_prepare_test.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
       "bytes": 9610,
-      "sha256": "8adcabf7f891dbd2b03754442c2c4c8ba7f68b254a70c532070b2bd404c6ba81"
+      "sha256": "b8933674e5728f9bb57d0d42e9bad7ea479ef8f1ee6775515b296b29edbaee5b"
     },
     {
       "path": "internal/domain/errors.go",
@@ -2073,10 +2127,11 @@
       "path": "internal/domain/memory_recall.go",
       "source": "internal/domain/memory_recall.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
-      "bytes": 8195,
-      "sha256": "c3d27269588219e107585b6ef498d0c9f154c3501407cef54a30aad52e3e06a2"
+      "bytes": 8499,
+      "sha256": "f5ed29850d9af8596cedab22aea06e5cbdc7adc4ea48bcb8e5dcbb79c1e23216"
     },
     {
       "path": "internal/domain/memory_recall_test.go",
@@ -2922,10 +2977,11 @@
       "path": "internal/memory/evidence.go",
       "source": "internal/memory/evidence.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
-      "bytes": 10133,
-      "sha256": "c1ed19237e3e307832b49339c0558a9426f31cf592426f9b670da4877b48edc5"
+      "bytes": 10562,
+      "sha256": "90605d38545ce343f9b24e84ff09cf22c581763919b34d567a63aa97498f223c"
     },
     {
       "path": "internal/memory/evidence_maturation_test.go",
@@ -3008,10 +3064,11 @@
       "path": "internal/memory/policy.go",
       "source": "internal/memory/policy.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
-      "bytes": 23021,
-      "sha256": "d271de98195ebfff2cc901fcf3aba21d6245ff5f2f18e3654a252ef4ac2713da"
+      "bytes": 23726,
+      "sha256": "4ff616880603fa2d33149d759d3769af81d8d9977181221f7b222747cba006da"
     },
     {
       "path": "internal/memory/policy_test.go",
@@ -3026,10 +3083,11 @@
       "path": "internal/memory/recall.go",
       "source": "internal/memory/recall.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
-      "bytes": 16739,
-      "sha256": "ba18d754bcabe51a6d1576d3c31647c1dff8834b66797ec81d02e6e506c1cc73"
+      "bytes": 17003,
+      "sha256": "f4ac9cffb58cea6d08d52e2109b16cf889ef4f686c486177180447d71dff82c0"
     },
     {
       "path": "internal/memory/recall_assurance_test.go",
@@ -3050,6 +3108,15 @@
       "sha256": "30eca0d1239a94951e84130a03a50e9f4b801779546af8d32660f838725173c6"
     },
     {
+      "path": "internal/memory/recall_query.go",
+      "source": "generated",
+      "changes": [
+        "added-for-recall-and-dialogue-continuity"
+      ],
+      "bytes": 1868,
+      "sha256": "c9b85e5e2235e98f3a13f0acf1bf9740fa4282321a40964e14ef7027d565d404"
+    },
+    {
       "path": "internal/memory/recall_rendering_v2_test.go",
       "source": "internal/memory/recall_rendering_v2_test.go",
       "changes": [
@@ -3057,6 +3124,15 @@
       ],
       "bytes": 4811,
       "sha256": "0cdf05594d75511f93dd46dde2ccf551e8fed1f1bf62b9ad6484c6904f89279c"
+    },
+    {
+      "path": "internal/memory/recall_v5_test.go",
+      "source": "generated",
+      "changes": [
+        "added-for-recall-and-dialogue-continuity"
+      ],
+      "bytes": 4513,
+      "sha256": "6394057ec59cdbc56e2166f6aade27d6b6d66aa25ff44b902ace9cf6edb22591"
     },
     {
       "path": "internal/memory/salience.go",
@@ -3089,10 +3165,11 @@
       "path": "internal/memory/types.go",
       "source": "internal/memory/types.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
-      "bytes": 10633,
-      "sha256": "a554ad3a9ac8d657331783708e27cc8c1fabe6fe52df2a97a9fb7101d273399c"
+      "bytes": 10702,
+      "sha256": "279ef7d4b872bdd7743addb9149fefff939a2093d335444582147f225802faa6"
     },
     {
       "path": "internal/namespacelock/ci_temp_fallback.go",
@@ -3381,19 +3458,21 @@
       "path": "internal/restore/restore_test.go",
       "source": "internal/restore/restore_test.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
       "bytes": 43528,
-      "sha256": "f4cd86ebd71fd9b4dc493c7354bebd4c70d0c60c52de00022beda47293274a9e"
+      "sha256": "a68e8cb1f9148e04c7d9c730e5985bcbfd831b37a6879c7dcda854c463894a2a"
     },
     {
       "path": "internal/restore/service.go",
       "source": "internal/restore/service.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
       "bytes": 34737,
-      "sha256": "8259aeb48a09f4f05b55fc4070bfa917d0b24b7f448a38d077de7d28e028ffe8"
+      "sha256": "820049236bc887b0d6c0573ed42470de68be476424486cc6aa82bd54ca0f0502"
     },
     {
       "path": "internal/restore/types.go",
@@ -3464,19 +3543,21 @@
       "path": "internal/store/sqlite/autonomy_event_time.go",
       "source": "internal/store/sqlite/autonomy_event_time.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
-      "bytes": 6499,
-      "sha256": "ede667a4477f60e67f0400f3a231c8b09d7b149677e5ecbea46cb70e263b6fcd"
+      "bytes": 6606,
+      "sha256": "c7502904e3ce290be50197e8fc071afddc8791d31953cccbcdcceec5fbb1c2c0"
     },
     {
       "path": "internal/store/sqlite/autonomy_generation_mutations.go",
       "source": "internal/store/sqlite/autonomy_generation_mutations.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
-      "bytes": 50625,
-      "sha256": "9ba6892560515b6243c70d62fb575f9667338e848ec515f95738d4c041acf569"
+      "bytes": 50711,
+      "sha256": "a027b949896f39ae61838553c1d559c1564aba6886044b737fabc9cb85f025ad"
     },
     {
       "path": "internal/store/sqlite/autonomy_generation_reads.go",
@@ -3577,10 +3658,11 @@
       "path": "internal/store/sqlite/canonical_backend.go",
       "source": "internal/store/sqlite/canonical_backend.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
       "bytes": 25337,
-      "sha256": "65d30f0324d9b7001c17a26135cb25cd7aa631b3cb7487b13fa5fe3dbd3ee1f3"
+      "sha256": "e855c9f42e57e9783d32fe510c52ac46f0defd6a6c20148c89cfc9552d564068"
     },
     {
       "path": "internal/store/sqlite/canonical_boundary_test.go",
@@ -3595,19 +3677,21 @@
       "path": "internal/store/sqlite/canonical_reads.go",
       "source": "internal/store/sqlite/canonical_reads.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
-      "bytes": 45565,
-      "sha256": "54ddae1c83cc0273741cdb1cad434f975262414837e230329f44af9e8a6196cf"
+      "bytes": 45735,
+      "sha256": "25acfae3a8cd62e0b2c9f401a725678d82215e592f9a1b7d6a5d3fded30a493c"
     },
     {
       "path": "internal/store/sqlite/claim_consumer_contract_m7_test.go",
       "source": "internal/store/sqlite/claim_consumer_contract_m7_test.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
-      "bytes": 53637,
-      "sha256": "e8d380571b5edeea0199a24c272c706ed3fb01489af87baed5c25c4512153d94"
+      "bytes": 53645,
+      "sha256": "f22af0908990715bca1af0793066c91f82275984c8d7bee0580b026ef7a2b126"
     },
     {
       "path": "internal/store/sqlite/claim_eligibility.go",
@@ -3683,28 +3767,31 @@
       "path": "internal/store/sqlite/dialogue_assembly_reads.go",
       "source": "internal/store/sqlite/dialogue_assembly_reads.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
-      "bytes": 24549,
-      "sha256": "d3283650713a26cb6deb650d0c7dbbb9c2468353ba50ce634b5283dd4adc15df"
+      "bytes": 25030,
+      "sha256": "842330ce297a3634153bc6fb04bc7b91e67a0e0a0b83c2fe758753fff95d5d67"
     },
     {
       "path": "internal/store/sqlite/dialogue_assembly_reads_test.go",
       "source": "internal/store/sqlite/dialogue_assembly_reads_test.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
       "bytes": 22525,
-      "sha256": "dcc238d3ec3263bd51db38f145dfed217e93c464d85a363a0091bbaf88e029a1"
+      "sha256": "38f05c0cf63107a5d8fc94893e7908a7d553b77e4d5d155cf39f365458df00aa"
     },
     {
       "path": "internal/store/sqlite/dialogue_context_helpers.go",
       "source": "internal/store/sqlite/dialogue_context_helpers.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
-      "bytes": 21515,
-      "sha256": "23ad24f6182c547ea5c46691d688170833089b22f41271acb3e2fce5c64a087d"
+      "bytes": 24765,
+      "sha256": "923192296476f96a7bd30a882540da4ad2ec784f546a3899d825742a9e58dc99"
     },
     {
       "path": "internal/store/sqlite/dialogue_discovery_test.go",
@@ -3719,37 +3806,41 @@
       "path": "internal/store/sqlite/dialogue_execution_read_test.go",
       "source": "internal/store/sqlite/dialogue_execution_read_test.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
-      "bytes": 32493,
-      "sha256": "001f007dfd7f52491380b396ce16cde8b0e76d56ded73384fb92c5efe22813c8"
+      "bytes": 32779,
+      "sha256": "7f9b1c64f2234df82a0c2b6670cbbfd136e590a81589e17128c3e27773e736dd"
     },
     {
       "path": "internal/store/sqlite/dialogue_mutations.go",
       "source": "internal/store/sqlite/dialogue_mutations.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
-      "bytes": 78887,
-      "sha256": "fcdc228cabc24838654e5c2ec968a4e103e542684a1e4a11526cbd80c8a32521"
+      "bytes": 79176,
+      "sha256": "1879078090111ca2f8295555352eb2a2d0a854f60b5990692c3b35aa41f859a8"
     },
     {
       "path": "internal/store/sqlite/dialogue_prepare_writer.go",
       "source": "internal/store/sqlite/dialogue_prepare_writer.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
-      "bytes": 74463,
-      "sha256": "7659718417b825a5af1b363bc38c44ca2088665fc1a8f1d5b71b364a88d4f804"
+      "bytes": 74902,
+      "sha256": "e8cc2be02917a92db7539c8953a33b60a2a714b4d1875d75d431e10e3db79936"
     },
     {
       "path": "internal/store/sqlite/dialogue_prepare_writer_test.go",
       "source": "internal/store/sqlite/dialogue_prepare_writer_test.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
-      "bytes": 63543,
-      "sha256": "99f4f12b8a2b15a0563bb8f88c2b7505f375ffefbe72228a0bcaa8ae33c6d928"
+      "bytes": 63986,
+      "sha256": "c8b31566e789e1ead6059c4f8f0b00cea288e72ae754a90a8d8b7fb2eb0c8d73"
     },
     {
       "path": "internal/store/sqlite/erasure_logical.go",
@@ -3974,10 +4065,11 @@
       "path": "internal/store/sqlite/mandatory_recovery.go",
       "source": "internal/store/sqlite/mandatory_recovery.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
-      "bytes": 29809,
-      "sha256": "256349abf33dd368930be955db0f78640dc923f2fce08ff2a6466aa733a4ff64"
+      "bytes": 29846,
+      "sha256": "4fda9c4b8e4d69f9a4427aea609c5ae76dcd80c9d1c5828af9d218ca7f4db12a"
     },
     {
       "path": "internal/store/sqlite/memory_admin_reads.go",
@@ -4028,10 +4120,11 @@
       "path": "internal/store/sqlite/memory_claim_mutations_test.go",
       "source": "internal/store/sqlite/memory_claim_mutations_test.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
-      "bytes": 46437,
-      "sha256": "a8738c25cff437b1d237e295c98548b2084c412001f547716b36a523fd31c485"
+      "bytes": 46543,
+      "sha256": "1c6c1b8687828314cb88bc2b34256dfc6d01da950016aeef2c37d75407e731c9"
     },
     {
       "path": "internal/store/sqlite/memory_derivation_mutations.go",
@@ -4109,10 +4202,11 @@
       "path": "internal/store/sqlite/memory_policy_mutations.go",
       "source": "internal/store/sqlite/memory_policy_mutations.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
-      "bytes": 7123,
-      "sha256": "00b232e4523fc3a1b570da4d070e08b08d620c53e0623975c032770ba5d5fa5a"
+      "bytes": 7387,
+      "sha256": "56dbac3c3ba253ba978aca47ffb113fe35fa3974b82a31abe09ed3265dda72be"
     },
     {
       "path": "internal/store/sqlite/memory_policy_mutations_test.go",
@@ -4145,28 +4239,31 @@
       "path": "internal/store/sqlite/memory_recall_mutations_test.go",
       "source": "internal/store/sqlite/memory_recall_mutations_test.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
-      "bytes": 5715,
-      "sha256": "26b54c14f129cdc52d2f816f6505c056d389fc6cc46f6c9a926684d32b4d9e4c"
+      "bytes": 5729,
+      "sha256": "34e20d0036322340318c35d522a9c3363cfc8aca2c3a483e34f169243555a7ec"
     },
     {
       "path": "internal/store/sqlite/memory_recall_reads.go",
       "source": "internal/store/sqlite/memory_recall_reads.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
-      "bytes": 29459,
-      "sha256": "9549b0a71c65b8a0b1bd3ad00dc1e02e27e116d8509cfd8333f1f5002abade19"
+      "bytes": 29967,
+      "sha256": "2f249dd7385a6a4677a171d01da472b33a6b3426403d4aa528902923cefdeee7"
     },
     {
       "path": "internal/store/sqlite/memory_recall_reads_test.go",
       "source": "internal/store/sqlite/memory_recall_reads_test.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
-      "bytes": 12702,
-      "sha256": "fbe92bd500da3e9cd596adff046eede81719d45476a6afb3b6ef0a96a38bc5dd"
+      "bytes": 12710,
+      "sha256": "dfdffb456770be9ac35879c10338a4de9f0b6dd2521893d52698a5871f0dbefa"
     },
     {
       "path": "internal/store/sqlite/memory_reextraction_mutations.go",
@@ -4345,6 +4442,15 @@
       "sha256": "0022c0fe7d15cf04a6d3e7c9822c9c2fb4cdce962db07a144166323eac0787b0"
     },
     {
+      "path": "internal/store/sqlite/recall_v5_test.go",
+      "source": "generated",
+      "changes": [
+        "added-for-recall-and-dialogue-continuity"
+      ],
+      "bytes": 7168,
+      "sha256": "38cc5ca0a5c5c478e608f00c97ebc6ab16ffd5b2c7f2020f9ee705fa8945836c"
+    },
+    {
       "path": "internal/store/sqlite/revision_resolution_test.go",
       "source": "internal/store/sqlite/revision_resolution_test.go",
       "changes": [
@@ -4375,10 +4481,11 @@
       "path": "internal/store/sqlite/service_readiness.go",
       "source": "internal/store/sqlite/service_readiness.go",
       "changes": [
-        "neutral-module-namespace"
+        "neutral-module-namespace",
+        "recall-and-dialogue-continuity-update"
       ],
-      "bytes": 12684,
-      "sha256": "844ea970b8e5e7c8c7473a8e4f09501cf244a1df33d20fe275c848d4ee74bbd8"
+      "bytes": 12728,
+      "sha256": "49244d7d7a4d5ae46cf6db285c19df7ef1aac15d53694dbd77f340b50fb75c4e"
     },
     {
       "path": "internal/store/sqlite/service_readiness_test.go",
@@ -4388,6 +4495,15 @@
       ],
       "bytes": 22650,
       "sha256": "806ed3c0d68045869d8cf1604fb7ae32aae42007ee303456fef183a83feafce5"
+    },
+    {
+      "path": "internal/store/sqlite/session_continuity_test.go",
+      "source": "generated",
+      "changes": [
+        "added-for-recall-and-dialogue-continuity"
+      ],
+      "bytes": 5141,
+      "sha256": "3baf01ed5ea2dcf56ab208dd0d9d8415e9a3e12b9bb5abcc6e138083b6f73b65"
     },
     {
       "path": "internal/store/sqlite/session_policy_projection_test.go",

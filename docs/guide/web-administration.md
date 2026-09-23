@@ -126,8 +126,9 @@ does not create a database or silently initialize a resident.
 
 The default bootstrap policy keeps memory recall disabled and is eligible for
 ordinary dialogue. Enabled historical v2/v3 memory policies must be migrated with
-**Activate memory policy v4** before starting dialogue. That operation keeps its
-existing expected-current-version and acknowledgement requirements.
+**Activate memory policy v4** or **Activate memory policy v5** before starting
+dialogue. Use v5 for the current Recall ranking; review the expected current
+version and acknowledgements described in [configuration](configuration.md#記憶とself-talk).
 
 ## Dialogue and maintenance
 
@@ -193,14 +194,14 @@ dialogue port so its navigation link also reflects the new address.
 
 ## Available operations
 
-All 40 finite product CLI operations are included. Process entrypoints
+All 41 finite product CLI operations are included. Process entrypoints
 (`serve`, `admin serve`) and CLI help are not finite catalog operations. The
 dedicated dialogue controls manage the owned `serve` lifecycle.
 
 | Group | CLI operations |
 | --- | --- |
 | Resident | `admin bootstrap init/approve/finalize`; `admin resident list/show/select/archive` |
-| Memory | `admin memory policy activate-v0/activate-autonomy-v0/activate-v4`; `admin memory claim list/show/scope/status`; `admin memory reextract/abstract/split`; `admin memory persona propose/list` |
+| Memory | `admin memory policy activate-v0/activate-autonomy-v0/activate-v4/activate-v5`; `admin memory claim list/show/scope/status`; `admin memory reextract/abstract/split`; `admin memory persona propose/list` |
 | Autonomy | `admin autonomy status`; `admin autonomy retention candidates` |
 | Inspection and maintenance | `db verify`; `ledger verify`; `projection status/rebuild`; `admin integrity scan`; `admin recovery terminalize`; `admin runtime session-policy select`; `admin diagnostics`; `healthcheck` |
 | Backup and export | `backup create/verify/restore`; `export jsonl` |
@@ -208,7 +209,8 @@ dedicated dialogue controls manage the owned `serve` lifecycle.
 
 The legacy policy operations `activate-v0` and `activate-autonomy-v0` only
 retry an already-active v2 or v3 policy. For a new policy transition, use
-`activate-v4`; see [memory and self-talk setup](configuration.md#記憶とself-talk).
+`activate-v5` to enable the current Recall ranking; existing v4 residents remain
+supported. See [memory and self-talk setup](configuration.md#記憶とself-talk).
 
 Required fields, choices, repeated identifiers, and explicit boolean options are
 rendered from the command catalog. Repeated fields accept one value per line.

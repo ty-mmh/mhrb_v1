@@ -40,6 +40,8 @@ docker compose up -d --build
 
 管理画面の既定URLは [http://127.0.0.1:8788/](http://127.0.0.1:8788/) です。**Bootstrap init → approve → finalize** でResidentを作り、**Start dialogue server → Open dialogue** から会話を始めます。詳しい設定は各ガイドを参照してください。
 
+間隔を空けた会話では、直前1往復（未回答なら直前のユーザー発話1件）を新しいセッションの初期文脈へ引き継ぎます。全過去履歴を毎回読み込む機能ではありません。長期記憶のRecallは初期状態では無効で、[Memory policy v5の有効化](docs/guide/configuration.md#記憶とself-talk)を別途行います。
+
 管理画面は単一利用者のローカル環境を前提としており、ログインや利用者認証はありません。Host・Originの制限は、同じ端末の別ユーザーやローカルプロセスを認証するものではありません。共有PCで使う場合は、他の利用者も管理画面を操作できる点に注意してください。[管理画面のアクセス条件](docs/guide/web-administration.md)と、対話停止が必要な[管理操作](docs/guide/operations.md#管理操作を実行する)を参照してください。
 
 ## 同梱内容

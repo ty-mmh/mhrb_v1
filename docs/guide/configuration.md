@@ -44,14 +44,18 @@ Linuxでは制約付きの秘密ファイルを指す `MAHOROBA_PROVIDER_API_KEY
 
 ## 記憶とself-talk
 
-初期の `memory-policy-v1` ではRecallが無効ですが、通常の対話はできます。Recallやself-talkを使う場合は、対話停止後に **Memory → Activate memory policy v4** を実行します。
+初期の `memory-policy-v1` ではRecallが無効ですが、通常の対話はできます。質問に応じた記憶のRecallを使う場合は、対話停止後に **Memory → Activate memory policy v5** を実行します。既存のResidentを自動でv5へ移行することはありません。
 
 - **Resident ID**：対象ResidentのID。
 - **Current memory policy**：現在の版を指定。**Autonomy → Autonomy status** の `active_memory_policy` で確認できます。
 - v1から移行する場合は **Acknowledge enabling Recall** と **Acknowledge mandatory self-talk extraction** の両方を確認。
-- v2からは後者の確認が必要。v3からはこの2つの追加確認は不要です。
+- v2からは後者の確認が必要。v3／v4からはこの2つの追加確認は不要です。
 
-`Activate memory policy v0` と `Activate autonomy memory policy` は、既にv2／v3になっている場合の互換再試行用です。新規の移行にはv4を使ってください。
+v5は現在の質問と記憶の文章の文字の重なりを使って候補を選びます。文字の一致がない記憶は選択されず、過去に繰り返しRecallされたこと自体は順位を押し上げません。同点では新しいULIDの記憶を優先します。意味の近さを完全に理解する検索ではないため、言い換えなどを拾えない場合があります。`confidence` は証拠量と支持・反証の重みから算出するスコアで、内容が真実である確率ではありません。
+
+CLIでは、たとえばv4から `mahoroba admin memory policy activate-v5 --resident <Resident-ID> --from memory-policy-v4` で移行します。v5での再試行には `--from memory-policy-v5` を指定します。移行後に旧版へ戻す操作はありません。
+
+既存のv4は引き続き対話に使用できます。`Activate memory policy v0` と `Activate autonomy memory policy` は、既にv2／v3になっている場合の互換再試行用です。今回のRecall改善を使う場合はv5を明示的に適用してください。
 
 **self-talkの記憶抽出の承認と、self-talk生成のONは別です。** 生成を有効にするには、使用中TOMLの既存セクションを変更し、対話を再起動します。
 
@@ -60,7 +64,7 @@ Linuxでは制約付きの秘密ファイルを指す `MAHOROBA_PROVIDER_API_KEY
 enabled = true
 ```
 
-対象は選択中かつactiveのResidentです。v4適用後に一度ユーザーメッセージを送り、待機します。既定は30分間隔、静穏時間23:00〜07:00、1時間2回・1日12回・連続10回までです。時刻は `timezone` に従い、送信直後の会話処理中などは抑止されます。
+対象は選択中かつactiveのResidentです。v4またはv5適用後に一度ユーザーメッセージを送り、待機します。既定は30分間隔、静穏時間23:00〜07:00、1時間2回・1日12回・連続10回までです。時刻は `timezone` に従い、送信直後の会話処理中などは抑止されます。
 
 状態は **Autonomy status** の `features.self_talk` にある `configured`、`effective`、`eligible`、`blocking_reason`、`next_eligible_at` で確認できます。サーバーの **Running** 状態も別に確認してください。
 
